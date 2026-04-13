@@ -1,1 +1,1 @@
-# baekseok-8-team
+# SoftWare 8 Team Project
