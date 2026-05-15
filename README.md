@@ -7,7 +7,7 @@
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **역할** | 조장(PM) | 서기 | 조원 | 조원 | 조원 | 조원 |
 | **주요 파트** | 프로젝트 총괄, 프론트엔드 | 회의록 관리, 백엔드 | 프론트엔드 | 백엔드 | 백엔드 | 백엔드 |
-| **GitHub 주소** | [허시온](https://github.com/) | [강준목](https://github.com/) | [김승원](https://github.com/) | [이동현](https://github.com/) | [임이삭](https://github.com/) | [오상언](https://github.com/) |
+| **GitHub 주소** | [허시온](https://github.com/) | [강준묵](https://github.com/) | [김승원](https://github.com/) | [이동현](https://github.com/) | [임이삭](https://github.com/) | [오상언](https://github.com/) |
 
 ## 2. 🛠️ 기술 스택
 
