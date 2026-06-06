@@ -1,0 +1,31 @@
+# Python Virtual Environment (가상환경)
+venv/
+ENV/
+env/
+
+# YOLOv8 가중치 파일 (.pt) 제외
+*.pt
+
+# Ultralytics 캐시 및 설정 폴더 제외
+.ultralytics/
+
+# Test Images & Outputs (테스트 이미지 및 결과물)
+test.jpg
+test.png
+test.jpeg
+
+# test_client.py 실행 시 Base64 복호화로 자동 생성되는 결과물 제외
+result_boxed.jpg
+result_*.jpg
+result_*.png
+
+# Python System Cache (파이썬 임시 파일)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# 환경 변수 파일
+.env
+.env.local
