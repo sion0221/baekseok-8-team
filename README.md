@@ -6,7 +6,7 @@
 | **이름** | <img width="60" alt="Image" src="https://github.com/user-attachments/assets/da556f7a-9adb-451f-abb4-75da76b1eb0d" /><br>허시온 | <img width="60" alt="Image" src="https://github.com/user-attachments/assets/ada8a5f6-e7d2-4844-8c03-744535532327" /><br>강준묵 | <img width="60" alt="Image" src="https://github.com/user-attachments/assets/53a62c89-cc06-4b49-9ff0-efe57af6b251" /><br>김승원 | <img width="60" alt="Image" src="https://github.com/user-attachments/assets/6e2a6c89-a82c-4f10-9d50-1213b7af8cc4" /><br>이동현 | <img width="60" alt="Image" src="https://github.com/user-attachments/assets/8ce2ed0d-f917-4398-b453-8ca7f9a79503" /><br>임이삭 | <img width="60" alt="Image" src="https://github.com/user-attachments/assets/a93d80e1-eeee-4e6b-9ee8-a4650c08592a" /><br>오상언 |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **역할** | 조장(PM) | 서기 | 조원 | 조원 | 조원 | 조원 |
-| **주요 파트** | 프로젝트 총괄, 프론트엔드 | 회의록 관리, 백엔드 | 프론트엔드 | 백엔드 | 백엔드 | 백엔드 |
+| **주요 파트** | 프로젝트 총괄, <br />프론트엔드 | 회의록 관리, 백엔드 | 프론트엔드 | 백엔드 | 백엔드 | 백엔드 |
 | **GitHub 주소** | [허시온](https://github.com/) | [강준묵](https://github.com/) | [김승원](https://github.com/) | [이동현](https://github.com/) | [임이삭](https://github.com/) | [오상언](https://github.com/) |
 
 ## 2. 🛠️ 기술 스택
