@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import {
   Card,
@@ -18,6 +19,8 @@ import {
 } from 'lucide-react';
 
 export default function FindIdPage() {
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isCodeSending, setIsCodeSending] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -30,20 +33,45 @@ export default function FindIdPage() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errorMessage) setErrorMessage('');
   };
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const isEmailValid = emailRegex.test(formData.email);
-  const isCodeValid = formData.authCode.trim().length === 6;
+
+  // 🎯 Supabase 사양에 맞춰 인증번호 길이 검증을 8자리로 변경
+  const isCodeValid = formData.authCode.trim().length === 8;
 
   const handleSendCodeClick = async () => {
     if (!isEmailValid || isCodeSending) return;
+
     setIsCodeSending(true);
     setErrorMessage('');
+
     try {
+      const { data, error: dbError } = await supabase
+        .from('users')
+        .select('email')
+        .eq('email', formData.email)
+        .single();
+
+      if (dbError || !data) {
+        setErrorMessage('해당 이메일로 가입된 회원 정보가 없습니다.');
+        return;
+      }
+
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: formData.email,
+        options: {
+          shouldCreateUser: false,
+        },
+      });
+
+      if (otpError) throw otpError;
+
       setIsCodeSent(true);
     } catch (err) {
-      setErrorMessage('인증번호 전송에 실패했습니다! 다시 시도해 주세요.');
+      setErrorMessage('인증번호 전송에 실패했습니다. 다시 시도해 주세요.');
     } finally {
       setIsCodeSending(false);
     }
@@ -57,28 +85,21 @@ export default function FindIdPage() {
     setErrorMessage('');
 
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('email')
-        .eq('email', formData.email)
-        .single();
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+        email: formData.email,
+        token: formData.authCode,
+        type: 'email',
+      });
 
-      if (error || !data) {
-        setErrorMessage(
-          '해당 정보로 가입된 아이디(이메일)를 찾을 수 없습니다.',
-        );
+      if (verifyError) {
+        setErrorMessage('인증코드가 맞지 않거나 만료되었습니다.');
         return;
       }
 
-      if (formData.authCode !== '123456') {
-        setErrorMessage('인증코드가 맞지 않습니다! 다시 확인해 주세요.');
-        return;
-      }
-
-      setFoundEmail(data.email);
+      setFoundEmail(formData.email);
       setIsSuccess(true);
     } catch (err) {
-      setErrorMessage('오류가 발생했습니다.');
+      setErrorMessage('오류가 발생했습니다. 다시 시도해 주세요.');
     } finally {
       setIsLoading(false);
     }
@@ -169,7 +190,7 @@ export default function FindIdPage() {
                   {isCodeSent && !errorMessage && (
                     <div className="flex items-center gap-[6px] text-[12px] text-[#5A66EB] font-medium">
                       <LucideCheckCircle2 className="w-[14px] h-[14px]" />
-                      <span>인증번호가 전송되었습니다.</span>
+                      <span>인증코드가 전송되었습니다.</span>
                     </div>
                   )}
                 </div>
@@ -182,10 +203,11 @@ export default function FindIdPage() {
                     name="authCode"
                     type="text"
                     required
+                    maxLength={8}
                     disabled={!isCodeSent || isLoading}
                     value={formData.authCode}
                     onChange={handleInputChange}
-                    placeholder="인증번호 입력"
+                    placeholder="8자리 인증코드 입력"
                     className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB] disabled:opacity-60"
                   />
 

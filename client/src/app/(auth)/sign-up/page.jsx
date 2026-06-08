@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,7 +20,14 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [serverError, setServerError] = useState('');
+
   const [emailError, setEmailError] = useState('');
+  const [isEmailChecking, setIsEmailChecking] = useState(false);
+  const [isEmailAvailable, setIsEmailAvailable] = useState(false);
+
+  const [nicknameError, setNicknameError] = useState('');
+  const [isNicknameChecking, setIsNicknameChecking] = useState(false);
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
 
   const [imagePreview, setImagePreview] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -37,8 +44,94 @@ export default function SignUpPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (name === 'email') {
       setEmailError('');
+      setIsEmailAvailable(false);
+    }
+    if (name === 'nickname') {
+      setNicknameError('');
+      setIsNicknameAvailable(false);
     }
   };
+
+  useEffect(() => {
+    const delayDebounceTimer = setTimeout(async () => {
+      if (formData.nickname.trim().length < 2) {
+        setNicknameError('');
+        setIsNicknameAvailable(false);
+        setIsNicknameChecking(false);
+        return;
+      }
+
+      setIsNicknameChecking(true);
+
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('nickname')
+          .eq('nickname', formData.nickname.trim());
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          setNicknameError('이미 존재하는 이름입니다.');
+          setIsNicknameAvailable(false);
+        } else {
+          setNicknameError('');
+          setIsNicknameAvailable(true);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsNicknameChecking(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceTimer);
+  }, [formData.nickname]);
+
+  useEffect(() => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    const delayDebounceTimer = setTimeout(async () => {
+      if (!formData.email) {
+        setEmailError('');
+        setIsEmailAvailable(false);
+        setIsEmailChecking(false);
+        return;
+      }
+
+      if (!emailRegex.test(formData.email)) {
+        setEmailError('올바른 이메일 주소를 입력해주세요.');
+        setIsEmailAvailable(false);
+        setIsEmailChecking(false);
+        return;
+      }
+
+      setIsEmailChecking(true);
+
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('email')
+          .eq('email', formData.email.trim());
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          setEmailError('이미 가입된 이메일 주소입니다.');
+          setIsEmailAvailable(false);
+        } else {
+          setEmailError('');
+          setIsEmailAvailable(true);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsEmailChecking(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceTimer);
+  }, [formData.email]);
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -53,10 +146,9 @@ export default function SignUpPage() {
     fileInputRef.current?.click();
   };
 
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const isEmailValid = emailRegex.test(formData.email);
-
-  const isNicknameValid = formData.nickname.trim().length >= 2;
+  const isNicknameValid =
+    formData.nickname.trim().length >= 2 && isNicknameAvailable;
+  const isEmailValid = isEmailAvailable;
   const isPasswordValid = formData.password.length >= 8;
   const isConfirmValid =
     formData.password === formData.passwordConfirm &&
@@ -71,7 +163,6 @@ export default function SignUpPage() {
 
     setIsLoading(true);
     setServerError('');
-    setEmailError('');
 
     try {
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -82,17 +173,7 @@ export default function SignUpPage() {
         },
       });
 
-      if (authError) {
-        if (
-          authError.message.includes('already registered') ||
-          authError.status === 422
-        ) {
-          setEmailError('이미 가입된 이메일 주소입니다.');
-          setIsLoading(false);
-          return;
-        }
-        throw authError;
-      }
+      if (authError) throw authError;
 
       let finalProfileUrl = '';
 
@@ -217,10 +298,30 @@ export default function SignUpPage() {
                     onChange={handleInputChange}
                     className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
-                  {formData.nickname && !isNicknameValid && (
-                    <p className="text-[12px] text-[#EF4444]">
-                      이름은 최소 2글자 이상이어야 합니다.
-                    </p>
+                  {isNicknameChecking ? (
+                    <div className="flex items-center gap-[6px] text-[12px] text-[#64748B] font-medium">
+                      <span>확인 중...</span>
+                    </div>
+                  ) : (
+                    <>
+                      {formData.nickname &&
+                        formData.nickname.trim().length < 2 && (
+                          <p className="text-[12px] text-[#EF4444]">
+                            이름은 최소 2글자 이상이어야 합니다.
+                          </p>
+                        )}
+                      {nicknameError && (
+                        <p className="text-[12px] text-[#EF4444] font-medium">
+                          {nicknameError}
+                        </p>
+                      )}
+                      {isNicknameAvailable &&
+                        formData.nickname.trim().length >= 2 && (
+                          <p className="text-[12px] text-[#5A66EB] font-medium">
+                            사용 가능한 이름입니다.
+                          </p>
+                        )}
+                    </>
                   )}
                 </div>
 
@@ -236,20 +337,23 @@ export default function SignUpPage() {
                     onChange={handleInputChange}
                     className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
-                  {emailError ? (
-                    <p className="text-[12px] text-[#EF4444] font-medium">
-                      {emailError}
-                    </p>
-                  ) : isEmailValid ? (
-                    <p className="text-[12px] text-[#5A66EB] font-medium">
-                      사용 가능한 이메일 형식입니다.
-                    </p>
+                  {isEmailChecking ? (
+                    <div className="flex items-center gap-[6px] text-[12px] text-[#64748B] font-medium">
+                      <span>확인 중...</span>
+                    </div>
                   ) : (
-                    formData.email && (
-                      <p className="text-[12px] text-[#EF4444]">
-                        올바른 이메일 주소를 입력해주세요.
-                      </p>
-                    )
+                    <>
+                      {emailError && (
+                        <p className="text-[12px] text-[#EF4444] font-medium">
+                          {emailError}
+                        </p>
+                      )}
+                      {isEmailAvailable && formData.email && (
+                        <p className="text-[12px] text-[#5A66EB] font-medium">
+                          사용 가능한 이메일입니다.
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
 
@@ -301,9 +405,17 @@ export default function SignUpPage() {
 
               <button
                 type="submit"
-                disabled={!isFormValid || isLoading}
+                disabled={
+                  !isFormValid ||
+                  isLoading ||
+                  isNicknameChecking ||
+                  isEmailChecking
+                }
                 className={`flex justify-center items-center gap-[8px] w-full h-[52px] mt-[12px] rounded-[12px] text-[16px] font-bold text-[#FFFFFF] transition-colors ${
-                  isFormValid && !emailError && !isLoading
+                  isFormValid &&
+                  !isLoading &&
+                  !isNicknameChecking &&
+                  !isEmailChecking
                     ? 'bg-[#5A66EB] hover:bg-[#4852D4] cursor-pointer'
                     : 'bg-[#D1D5DB] text-[#4B5563] cursor-not-allowed'
                 }`}

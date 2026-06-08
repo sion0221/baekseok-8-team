@@ -38,7 +38,7 @@ export default function ResetPasswordPage() {
     setErrorMessage('');
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/update-password`,
+        redirectTo: `${window.location.origin}/update-password`,
       });
       if (error) throw error;
       setIsSubmitted(true);
