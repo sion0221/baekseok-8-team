@@ -1,71 +1,109 @@
-"use client";
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+'use client';
 
-// [규칙] 함수형 컴포넌트: PascalCase
-// [규칙] 자식 props: onSave, onCancel
+import React, { useState } from 'react';
+
 const EditForm = ({ initialData, onSave, onCancel }) => {
-  // [규칙] Boolean 변수: is- / has-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasPasswordChanged, setHasPasswordChanged] = useState(false);
 
-  // [규칙] 부모(폼 자체) 내부 이벤트 처리 함수: handleXxx
   const handleFormSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // 임시 데이터. 실제로는 입력된 state 값을 모아서 전달해야 합니다.
+
+    const emailId = e.target.emailId.value;
+    const emailDomain = e.target.emailDomain.value;
+
     const updatedData = {
-      nickname: '김시민', 
-      email: 'citizen@email.com'
+      name: e.target.nickname.value,
+      email: `${emailId}@${emailDomain}`,
     };
-    
-    // 부모 컴포넌트(MyPage)로 데이터 전달
-    onSave(updatedData); 
+
+    onSave(updatedData);
   };
 
+  const initialEmail = initialData?.email || 'user@example.com';
+  const emailParts = initialEmail.split('@');
+  const initialId = emailParts[0] || '';
+  const initialDomain = emailParts.length > 1 ? emailParts[1] : '';
+
   return (
-    <div className="bg-[#2D2D2D] text-white p-6 rounded-2xl max-w-sm w-full mx-auto">
+    <div className="bg-white p-6 rounded-2xl w-full mx-auto border border-gray-100 shadow-sm">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold">회원정보 수정</h2>
-        <button onClick={onCancel} className="text-gray-400 hover:text-white">✕</button>
+        <h2 className="text-lg font-bold text-gray-900">회원정보 수정</h2>
       </div>
 
-      <form onSubmit={handleFormSubmit} className="space-y-4">
+      <form onSubmit={handleFormSubmit} className="space-y-5">
         <div>
-          <Label className="text-gray-300">닉네임</Label>
-          <Input defaultValue={initialData?.nickname || "김시민"} className="bg-transparent border-gray-600 text-white mt-1" />
-        </div>
-        
-        <div>
-          <Label className="text-gray-300">이메일</Label>
-          <Input defaultValue={initialData?.email || "citizen@email.com"} readOnly className="bg-transparent border-gray-600 text-gray-400 mt-1 cursor-not-allowed" />
-        </div>
-
-        <div>
-          <Label className="text-gray-300">현재 비밀번호</Label>
-          <Input type="password" placeholder="********" className="bg-transparent border-gray-600 text-white mt-1" />
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            사용자 이름
+          </label>
+          <input
+            name="nickname"
+            defaultValue={initialData?.name || '사용자'}
+            className="w-full border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
+          />
         </div>
 
         <div>
-          <Label className="text-gray-300">새 비밀번호</Label>
-          <Input 
-            type="password" 
-            placeholder="입력" 
-            className="bg-transparent border-gray-600 text-white mt-1" 
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            이메일
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              name="emailId"
+              type="text"
+              defaultValue={initialId}
+              className="flex-1 min-w-0 border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
+            />
+            <span className="text-gray-400 font-medium">@</span>
+            <input
+              name="emailDomain"
+              type="text"
+              defaultValue={initialDomain}
+              className="flex-1 min-w-0 border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            현재 비밀번호
+          </label>
+          <input
+            type="password"
+            placeholder="********"
+            className="w-full border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            새 비밀번호
+          </label>
+          <input
+            type="password"
+            placeholder="비밀번호 입력"
+            className="w-full border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
             onChange={(e) => setHasPasswordChanged(e.target.value.length > 0)}
           />
         </div>
 
-        <Button 
-          type="submit" 
-          disabled={isSubmitting}
-          className="w-full bg-[#5C45F2] hover:bg-indigo-600 mt-6 h-12 text-lg rounded-xl"
-        >
-          {isSubmitting ? '저장 중...' : '저장하기'}
-        </Button>
+        <div className="flex gap-3 mt-8">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 bg-[#F8F9FA] text-gray-600 border border-gray-200 py-3.5 rounded-xl font-medium hover:bg-gray-100 transition-colors"
+          >
+            취소
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex-1 bg-[#5A66EB] text-white py-3.5 rounded-xl font-medium hover:bg-[#4853cc] transition-colors disabled:bg-gray-300"
+          >
+            {isSubmitting ? '저장 중...' : '저장하기'}
+          </button>
+        </div>
       </form>
     </div>
   );

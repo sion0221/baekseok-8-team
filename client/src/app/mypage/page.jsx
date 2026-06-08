@@ -1,35 +1,108 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ChevronRight, Bell, LogOut, UserMinus } from 'lucide-react';
+import Header from '@/components/common/header';
 import ProfileCard from '@/components/mypage/profile-card';
 import EditForm from '@/components/mypage/edit-form';
+import LogoutModal from '@/components/mypage/logout-modal';
 
-// [규칙] 함수형 컴포넌트: PascalCase
 const MyPage = () => {
-  // [규칙] Boolean 변수: isEditMode
+  const router = useRouter();
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-  // [규칙] 부모 내부 이벤트 핸들러: handleToggleEdit
-  const handleToggleEdit = () => {
-    setIsEditMode(!isEditMode);
+  const userInfo = {
+    name: '사용자',
+    email: 'user@example.com',
+    grade: '실버',
+    reportCount: '12',
   };
 
-  // [규칙] 부모 내부 이벤트 핸들러: handleSaveProfile
+  const handleToggleEdit = () => {
+    setIsEditMode((prev) => !prev);
+  };
+
   const handleSaveProfile = (newData) => {
-    console.log('저장됨:', newData);
     setIsEditMode(false);
   };
 
+  const handleConfirmLogout = () => {
+    setIsLogoutModalOpen(false);
+    router.push('/login');
+  };
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl mb-4">마이페이지</h1>
-      {isEditMode ? (
-        // [규칙] 자식에게 주는 props: onSave, onCancel
-        <EditForm onSave={handleSaveProfile} onCancel={handleToggleEdit} />
-      ) : (
-        // [규칙] 자식에게 주는 props: onToggleEdit
-        <ProfileCard userInfo={{ name: '김시민', email: 'citizen@email.com' }} onToggleEdit={handleToggleEdit} />
-      )}
+    <div className="max-w-md mx-auto bg-[#F8F9FA] min-h-screen border-x border-gray-200 pb-20 relative">
+      <Header />
+
+      <div className="p-5">
+        {isEditMode ? (
+          <EditForm
+            initialData={userInfo}
+            onSave={handleSaveProfile}
+            onCancel={handleToggleEdit}
+          />
+        ) : (
+          <>
+            <ProfileCard userInfo={userInfo} onToggleEdit={handleToggleEdit} />
+
+            <ul className="mt-6 space-y-3">
+              <li>
+                <button
+                  onClick={() => router.push('/mypage/notifications')}
+                  className="w-full bg-white border border-gray-100 shadow-sm rounded-xl p-4 flex items-center justify-between hover:border-[#5A66EB] transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#EDF0FE] flex items-center justify-center text-[#5A66EB]">
+                      <Bell size={16} />
+                    </div>
+                    <span className="font-medium text-gray-800">알림 설정</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#5A66EB]" />
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => setIsLogoutModalOpen(true)}
+                  className="w-full bg-white border border-gray-100 shadow-sm rounded-xl p-4 flex items-center justify-between hover:border-[#5A66EB] transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#EDF0FE] flex items-center justify-center text-[#5A66EB]">
+                      <LogOut size={16} />
+                    </div>
+                    <span className="font-medium text-gray-800">로그아웃</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#5A66EB]" />
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => router.push('/mypage/withdraw')}
+                  className="w-full bg-white border border-gray-100 shadow-sm rounded-xl p-4 flex items-center justify-between hover:border-[#5A66EB] transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-500">
+                      <UserMinus size={16} />
+                    </div>
+                    <span className="font-medium text-gray-800">회원탈퇴</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#5A66EB]" />
+                </button>
+              </li>
+            </ul>
+          </>
+        )}
+      </div>
+
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleConfirmLogout}
+      />
     </div>
   );
 };

@@ -1,17 +1,46 @@
-"use client";
-import React from 'react';
-import { Button } from '@/components/ui/button'; // PascalCase로 import
-import { Card } from '@/components/ui/card';
+'use client';
 
-// [규칙] 함수형 컴포넌트: PascalCase
-// [규칙] 자식 props: onToggleEdit
+import React from 'react';
+import { User } from 'lucide-react';
+
 const ProfileCard = ({ userInfo, onToggleEdit }) => {
   return (
-    <Card className="p-4">
-      <h2 className="text-xl font-bold">{userInfo.name}님</h2>
-      <p>{userInfo.email}</p>
-      <Button onClick={onToggleEdit}>정보 수정</Button>
-    </Card>
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center">
+            <User className="w-7 h-7 text-gray-600" fill="currentColor" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">{userInfo.name}</h2>
+            <p className="text-sm text-gray-500">{userInfo.email}</p>
+          </div>
+        </div>
+        <button
+          onClick={onToggleEdit}
+          className="text-xs font-medium px-4 py-2 rounded-full border border-gray-200 text-gray-600 hover:text-[#5A66EB] hover:border-[#5A66EB] transition-colors"
+        >
+          정보 수정
+        </button>
+      </div>
+
+      <div className="flex gap-3">
+        <div className="flex-1 bg-[#F8F9FA] rounded-xl p-4 flex flex-col items-center justify-center border border-gray-100">
+          <span className="text-lg font-bold text-[#5A66EB] mb-1">
+            {userInfo.grade}
+          </span>
+          <span className="text-xs text-gray-500 font-medium">현재 등급</span>
+        </div>
+        <div className="flex-1 bg-[#F8F9FA] rounded-xl p-4 flex flex-col items-center justify-center border border-gray-100">
+          <span className="text-lg font-bold text-[#5A66EB] mb-1">
+            {userInfo.reportCount}
+          </span>
+          <span className="text-xs text-gray-500 font-medium">
+            총 신고 횟수
+          </span>
+        </div>
+      </div>
+    </div>
   );
 };
 
