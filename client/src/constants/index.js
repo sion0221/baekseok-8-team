@@ -64,7 +64,6 @@ export const TIMELINE = {
 export const COMPANY_LOGO = {
   씽씽: '/ssing.png',
   킥고잉: '/kickgoing.png',
-  라임: '/lime.png',
   빔: '/beam.png',
   기타: null,
 };

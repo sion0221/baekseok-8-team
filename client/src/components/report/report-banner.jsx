@@ -1,14 +1,36 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { MOCK_USER } from '@/mocks';
+import { supabase } from '@/lib/supabase';
 
-export default function ReportBanner({ username = '사용자' }) {
+export default function ReportBanner() {
+  const [username, setUsername] = useState('사용자');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('users')
+        .select('nickname')
+        .eq('id', user.id)
+        .single();
+
+      if (data?.nickname) setUsername(data.nickname);
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <div className="relative overflow-hidden rounded-[16px] bg-[#5A66EB] px-5 py-6 mb-4">
       <div className="relative z-10">
         <p className="text-[13px] text-indigo-200 mb-1">
-          안녕하세요, {MOCK_USER.nickname}님
+          안녕하세요, {username}님
         </p>
         <p className="text-[20px] font-bold text-white leading-tight mb-1">
           불법 킥보드 발견했나요?

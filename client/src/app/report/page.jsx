@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Check, X } from 'lucide-react';
 import { VIOLATION_TYPES, KICKBOARD_COMPANIES } from '@/constants';
+import { supabase } from '@/lib/supabase';
 
 export default function ReportPage() {
   const [step, setStep] = useState(1);
@@ -30,6 +31,33 @@ export default function ReportPage() {
     if (!file) return;
     if (photo) URL.revokeObjectURL(photo);
     setPhoto(URL.createObjectURL(file));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const blob = await fetch(photo).then((r) => r.blob());
+      const fileExt = blob.type.split('/')[1];
+      const fileName = `${Date.now()}.${fileExt}`;
+
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('reports')
+        .upload(fileName, blob);
+
+      if (storageError) return;
+
+      const { error } = await supabase.from('reports').insert({
+        image_url: storageData?.path,
+        latitude: location.lat,
+        longitude: location.lng,
+        kickboard_company: company,
+        violation_type: violationType,
+        status: '접수',
+      });
+
+      if (!error) handleNextStep();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -110,7 +138,7 @@ export default function ReportPage() {
       const script = document.querySelector('script[src*="dapi.kakao.com"]');
       if (script) script.addEventListener('load', loadMap);
     }
-  }, [step]);
+  }, [step, location]);
 
   const isMobile =
     typeof navigator !== 'undefined' &&
@@ -130,7 +158,7 @@ export default function ReportPage() {
                     : 'bg-gray-100 text-gray-400'
               }`}
             >
-              {s < step ? '✓' : s}
+              {s < step ? <Check size={14} /> : s}
             </div>
             {index < 2 && (
               <div
@@ -234,10 +262,10 @@ export default function ReportPage() {
                     URL.revokeObjectURL(photo);
                     setPhoto(null);
                   }}
-                  className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 rounded-bl-[6px] bg-black/50 text-white text-[10px]"
+                  className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 rounded-bl-[6px] bg-black/50 text-white"
                   aria-label="사진 삭제"
                 >
-                  ✕
+                  <X size={12} />
                 </button>
               </div>
             )}
@@ -339,16 +367,17 @@ export default function ReportPage() {
           </p>
 
           <button
-            onClick={handleNextStep}
+            onClick={handleSubmit}
             disabled={
               !photo ||
               !violationType ||
               !company ||
               (violationType === '기타' && !memo.trim())
             }
-            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity"
+            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
           >
-            ✓ 신고 제출하기
+            <CheckCircle size={18} />
+            신고 제출하기
           </button>
         </div>
       )}
