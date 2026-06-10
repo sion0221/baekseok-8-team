@@ -19,8 +19,10 @@ import Image from 'next/image';
 export default function SignUpPage() {
   const fileInputRef = useRef(null);
 
+  // step: 'form' | 'verify' | 'success'
+  const [step, setStep] = useState('form');
+
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [serverError, setServerError] = useState('');
 
   const [emailError, setEmailError] = useState('');
@@ -33,6 +35,10 @@ export default function SignUpPage() {
 
   const [imagePreview, setImagePreview] = useState('');
   const [imageFile, setImageFile] = useState(null);
+  const [pendingUserId, setPendingUserId] = useState(null);
+
+  const [authCode, setAuthCode] = useState('');
+  const [authCodeError, setAuthCodeError] = useState('');
 
   const [formData, setFormData] = useState({
     email: '',
@@ -139,8 +145,7 @@ export default function SignUpPage() {
     const file = e.target.files?.[0];
     if (file) {
       setImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -148,17 +153,14 @@ export default function SignUpPage() {
     fileInputRef.current?.click();
   };
 
-  const isNicknameValid =
-    formData.nickname.trim().length >= 2 && isNicknameAvailable;
+  const isNicknameValid = formData.nickname.trim().length >= 2 && isNicknameAvailable;
   const isEmailValid = isEmailAvailable;
   const isPasswordValid = formData.password.length >= 8;
   const isConfirmValid =
-    formData.password === formData.passwordConfirm &&
-    formData.passwordConfirm.length > 0;
+    formData.password === formData.passwordConfirm && formData.passwordConfirm.length > 0;
+  const isFormValid = isNicknameValid && isEmailValid && isPasswordValid && isConfirmValid;
 
-  const isFormValid =
-    isNicknameValid && isEmailValid && isPasswordValid && isConfirmValid;
-
+  // Step 1: 가입 폼 제출 → signUp 후 OTP 인증 단계로
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid || isLoading) return;
@@ -177,38 +179,59 @@ export default function SignUpPage() {
 
       if (authError) throw authError;
 
-      let finalProfileUrl = '';
+      setPendingUserId(authData?.user?.id || null);
+      setStep('verify');
+    } catch (err) {
+      setServerError(err.message || '회원가입 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      if (imageFile && authData?.user) {
+  // Step 2: OTP 인증
+  const handleVerifySubmit = async (e) => {
+    e.preventDefault();
+    if (!authCode.trim() || isLoading) return;
+
+    setIsLoading(true);
+    setAuthCodeError('');
+
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: formData.email,
+        token: authCode.trim(),
+        type: 'signup',
+      });
+
+      if (error) {
+        setAuthCodeError('인증코드가 맞지 않거나 만료되었습니다.');
+        return;
+      }
+
+      // 프로필 이미지 업로드
+      if (imageFile && (data?.user?.id || pendingUserId)) {
+        const userId = data?.user?.id || pendingUserId;
         const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${authData.user.id}-${Date.now()}.${fileExt}`;
+        const fileName = `${userId}-${Date.now()}.${fileExt}`;
 
         const { error: uploadError } = await supabase.storage
           .from('profile')
-          .upload(fileName, imageFile, {
-            cacheControl: '3600',
-            upsert: false,
-          });
+          .upload(fileName, imageFile, { cacheControl: '3600', upsert: false });
 
-        if (uploadError) throw uploadError;
-
-        const { data: urlData } = supabase.storage
-          .from('profile')
-          .getPublicUrl(fileName);
-
-        finalProfileUrl = urlData.publicUrl;
-
-        const { error: dbError } = await supabase
-          .from('users')
-          .update({ profile_url: finalProfileUrl })
-          .eq('id', authData.user.id);
-
-        if (dbError) throw dbError;
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage.from('profile').getPublicUrl(fileName);
+          await supabase
+            .from('users')
+            .update({ profile_url: urlData.publicUrl })
+            .eq('id', userId);
+        }
       }
 
-      setIsSuccess(true);
+      // 인증 후 세션 제거 (로그인 화면으로 유도)
+      await supabase.auth.signOut();
+      setStep('success');
     } catch (err) {
-      setServerError(err.message || '회원가입 오류가 발생했습니다.');
+      setAuthCodeError('오류가 발생했습니다. 다시 시도해 주세요.');
     } finally {
       setIsLoading(false);
     }
@@ -218,19 +241,30 @@ export default function SignUpPage() {
     <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC]">
       <Card className="w-full max-w-[390px] border-[#E2E8F0] rounded-[16px] shadow-sm bg-[#FFFFFF]">
         <CardHeader className="flex flex-row items-center gap-[12px] pt-[0px] pb-[32px] px-[24px]">
-          <Link
-            href="/sign-in"
-            className="flex items-center justify-center w-[24px] h-[24px] text-[#1E293B] hover:text-[#5A66EB] transition-colors"
-          >
-            <LucideChevronLeft className="w-[24px] h-[24px]" />
-          </Link>
+          {step === 'verify' ? (
+            <button
+              type="button"
+              onClick={() => setStep('form')}
+              className="flex items-center justify-center w-[24px] h-[24px] text-[#1E293B] hover:text-[#5A66EB] transition-colors"
+            >
+              <LucideChevronLeft className="w-[24px] h-[24px]" />
+            </button>
+          ) : (
+            <Link
+              href="/sign-in"
+              className="flex items-center justify-center w-[24px] h-[24px] text-[#1E293B] hover:text-[#5A66EB] transition-colors"
+            >
+              <LucideChevronLeft className="w-[24px] h-[24px]" />
+            </Link>
+          )}
           <CardTitle className="text-[22px] font-bold text-[#1E293B]">
-            회원가입
+            {step === 'verify' ? '이메일 인증' : '회원가입'}
           </CardTitle>
         </CardHeader>
 
         <CardContent className="px-[24px]">
-          {isSuccess ? (
+          {/* 성공 화면 */}
+          {step === 'success' && (
             <div className="flex flex-col items-center text-center w-full py-[16px]">
               <LucideCheckCircle2 className="w-[48px] h-[48px] mb-[16px] text-[#5A66EB]" />
               <h2 className="mb-[8px] text-[18px] font-semibold text-[#1E293B]">
@@ -248,7 +282,72 @@ export default function SignUpPage() {
                 로그인 하러 가기
               </Link>
             </div>
-          ) : (
+          )}
+
+          {/* OTP 인증 화면 */}
+          {step === 'verify' && (
+            <form onSubmit={handleVerifySubmit} className="flex flex-col w-full">
+              <p className="mb-[32px] text-[16px] font-medium text-[#1E293B] !leading-[24px]">
+                <span className="font-semibold text-[#5A66EB]">{formData.email}</span>
+                <br />
+                으로 발송된 인증코드를 입력해주세요
+              </p>
+
+              <div className="flex flex-col gap-[8px]">
+                <label className="text-[14px] font-medium text-[#1E293B]">
+                  인증코드
+                </label>
+                <input
+                  type="text"
+                  maxLength={8}
+                  value={authCode}
+                  onChange={(e) => {
+                    setAuthCode(e.target.value);
+                    if (authCodeError) setAuthCodeError('');
+                  }}
+                  placeholder="8자리 인증코드 입력"
+                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                />
+                {authCodeError && (
+                  <div className="flex items-center gap-[6px] text-[12px] text-[#EF4444] font-medium">
+                    <LucideAlertCircle className="w-[14px] h-[14px]" />
+                    <span>{authCodeError}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-[4px] text-[12px] text-[#64748B] mt-[4px]">
+                  <span>인증번호가 오지 않았나요?</span>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await supabase.auth.resend({ type: 'signup', email: formData.email });
+                    }}
+                    className="text-[#5A66EB] underline underline-offset-2 cursor-pointer hover:text-[#4852D4] transition-colors"
+                  >
+                    재전송
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={authCode.trim().length < 8 || isLoading}
+                className={`flex justify-center items-center gap-[8px] w-full h-[52px] mt-[120px] rounded-[12px] text-[16px] font-bold text-[#FFFFFF] transition-colors ${
+                  authCode.trim().length >= 8 && !isLoading
+                    ? 'bg-[#5A66EB] hover:bg-[#4852D4] cursor-pointer'
+                    : 'bg-[#D1D5DB] text-[#4B5563] cursor-not-allowed'
+                }`}
+              >
+                {isLoading ? (
+                  <Loader2 className="w-[20px] h-[20px] animate-spin" />
+                ) : (
+                  '인증 완료'
+                )}
+              </button>
+            </form>
+          )}
+
+          {/* 가입 폼 */}
+          {step === 'form' && (
             <form
               onSubmit={handleSignUpSubmit}
               className="flex flex-col items-center gap-[24px]"
@@ -278,7 +377,6 @@ export default function SignUpPage() {
                     <LucideUser className="w-[48px] h-[48px] text-[#94A3B8]" />
                   )}
                 </div>
-
                 <button
                   type="button"
                   className="absolute right-0 bottom-0 flex justify-center items-center w-[32px] h-[32px] bg-[#5A66EB] border-[2px] border-white rounded-full hover:bg-[#4852D4] transition-colors"
@@ -306,23 +404,21 @@ export default function SignUpPage() {
                     </div>
                   ) : (
                     <>
-                      {formData.nickname &&
-                        formData.nickname.trim().length < 2 && (
-                          <p className="text-[12px] text-[#EF4444]">
-                            이름은 최소 2글자 이상이어야 합니다.
-                          </p>
-                        )}
+                      {formData.nickname && formData.nickname.trim().length < 2 && (
+                        <p className="text-[12px] text-[#EF4444]">
+                          이름은 최소 2글자 이상이어야 합니다.
+                        </p>
+                      )}
                       {nicknameError && (
                         <p className="text-[12px] text-[#EF4444] font-medium">
                           {nicknameError}
                         </p>
                       )}
-                      {isNicknameAvailable &&
-                        formData.nickname.trim().length >= 2 && (
-                          <p className="text-[12px] text-[#5A66EB] font-medium">
-                            사용 가능한 이름입니다.
-                          </p>
-                        )}
+                      {isNicknameAvailable && formData.nickname.trim().length >= 2 && (
+                        <p className="text-[12px] text-[#5A66EB] font-medium">
+                          사용 가능한 이름입니다.
+                        </p>
+                      )}
                     </>
                   )}
                 </div>
@@ -407,17 +503,9 @@ export default function SignUpPage() {
 
               <button
                 type="submit"
-                disabled={
-                  !isFormValid ||
-                  isLoading ||
-                  isNicknameChecking ||
-                  isEmailChecking
-                }
+                disabled={!isFormValid || isLoading || isNicknameChecking || isEmailChecking}
                 className={`flex justify-center items-center gap-[8px] w-full h-[52px] mt-[12px] rounded-[12px] text-[16px] font-bold text-[#FFFFFF] transition-colors ${
-                  isFormValid &&
-                  !isLoading &&
-                  !isNicknameChecking &&
-                  !isEmailChecking
+                  isFormValid && !isLoading && !isNicknameChecking && !isEmailChecking
                     ? 'bg-[#5A66EB] hover:bg-[#4852D4] cursor-pointer'
                     : 'bg-[#D1D5DB] text-[#4B5563] cursor-not-allowed'
                 }`}
