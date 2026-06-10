@@ -1,10 +1,9 @@
-import LoginCard from "@/components/Login/LoginCard";
+import MainPage from '@/app/main/page';
 
 export default function Page() {
   return (
     <>
-      {/* 예시 컴포넌트(로그인 카드) */}
-      <LoginCard />
+      <MainPage />
     </>
   );
 }
