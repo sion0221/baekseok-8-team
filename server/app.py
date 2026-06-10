@@ -20,7 +20,7 @@ def classify_image():
         image_bytes = file.read()
         image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
         
-        results = model.predict(source=image, conf=0.15, iou=0.45, verbose=False)
+        results = model.predict(source=image, conf=0.4, iou=0.45, verbose=False)
         is_kickboard = len(results[0].boxes) > 0
         
         confidence = 0.0
