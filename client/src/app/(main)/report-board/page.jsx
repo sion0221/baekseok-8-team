@@ -60,9 +60,9 @@ export default function ReportBoardPage() {
       </div>
 
       {isLoading ? (
-        <p className="text-[13px] text-gray-400 text-center py-8">
-          불러오는 중...
-        </p>
+        <div className="flex items-center justify-center py-16">
+          <div className="w-8 h-8 rounded-full border-4 border-[#5A66EB]/20 border-t-[#5A66EB] animate-spin" />
+        </div>
       ) : (
         <>
           <p className="text-[13px] text-gray-400 mb-3">

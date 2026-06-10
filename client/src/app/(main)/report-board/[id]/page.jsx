@@ -80,7 +80,11 @@ export default function ReportDetailPage() {
     }
   }, [report]);
 
-  if (isLoading) return <p className="p-4 text-[13px] text-gray-400">불러오는 중...</p>;
+  if (isLoading) return (
+    <div className="flex items-center justify-center py-16">
+      <div className="w-8 h-8 rounded-full border-4 border-[#5A66EB]/20 border-t-[#5A66EB] animate-spin" />
+    </div>
+  );
   if (!report) return <p className="p-4 text-[13px] text-gray-400">신고를 찾을 수 없어요.</p>;
 
   const status = REPORT_STATUS[report.status];

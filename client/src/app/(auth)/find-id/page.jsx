@@ -30,12 +30,14 @@ export default function FindIdPage() {
   const [foundEmail, setFoundEmail] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [formData, setFormData] = useState({ email: '', authCode: '' });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errorMessage) setErrorMessage('');
+    if (name === 'email' && emailError) setEmailError('');
+    if (name === 'authCode' && errorMessage) setErrorMessage('');
   };
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -58,7 +60,7 @@ export default function FindIdPage() {
         .single();
 
       if (dbError || !data) {
-        setErrorMessage('해당 이메일로 가입된 회원 정보가 없습니다.');
+        setEmailError('해당 이메일로 가입된 회원 정보가 없습니다.');
         return;
       }
 
@@ -97,6 +99,9 @@ export default function FindIdPage() {
         setErrorMessage('인증코드가 맞지 않거나 만료되었습니다.');
         return;
       }
+
+      // verifyOtp가 세션을 생성하므로 즉시 로그아웃 처리
+      await supabase.auth.signOut();
 
       setFoundEmail(formData.email);
       setIsSuccess(true);
@@ -189,7 +194,13 @@ export default function FindIdPage() {
                     </button>
                   </div>
 
-                  {isCodeSent && !errorMessage && (
+                  {emailError && (
+                    <div className="flex items-center gap-[6px] text-[12px] text-[#EF4444] font-medium">
+                      <LucideAlertCircle className="w-[14px] h-[14px]" />
+                      <span>{emailError}</span>
+                    </div>
+                  )}
+                  {isCodeSent && !emailError && (
                     <div className="flex items-center gap-[6px] text-[12px] text-[#5A66EB] font-medium">
                       <LucideCheckCircle2 className="w-[14px] h-[14px]" />
                       <span>인증코드가 전송되었습니다.</span>
