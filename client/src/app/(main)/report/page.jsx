@@ -19,6 +19,7 @@ export default function ReportPage() {
   const [nearbyPlace, setNearbyPlace] = useState('');
   const [aiResult, setAiResult] = useState(null); // AI 판별 결과
   const [aiChecking, setAiChecking] = useState(false); // 판별 진행중
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const mapRef = useRef(null);
   const cameraInputRef = useRef(null);
   const galleryInputRef = useRef(null);
@@ -57,6 +58,8 @@ export default function ReportPage() {
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const blob = await fetch(photo).then((r) => r.blob());
       const fileExt = blob.type.split('/')[1];
@@ -99,6 +102,8 @@ export default function ReportPage() {
       if (!error) setStep(3);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -459,12 +464,13 @@ export default function ReportPage() {
               !violationType ||
               !company ||
               aiChecking ||
+              isSubmitting ||
               (violationType === '기타' && !memo.trim())
             }
-            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
+            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
           >
             <CheckCircle size={18} />
-            {aiChecking ? 'AI 분석 중...' : '신고 제출하기'}
+            {isSubmitting ? '제출 중...' : aiChecking ? 'AI 분석 중...' : '신고 제출하기'}
           </button>
         </div>
       )}
