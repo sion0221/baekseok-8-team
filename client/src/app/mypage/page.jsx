@@ -1,24 +1,54 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, Bell, LogOut, UserMinus } from 'lucide-react';
 import Header from '@/components/common/header';
 import ProfileCard from '@/components/mypage/profile-card';
 import EditForm from '@/components/mypage/edit-form';
 import LogoutModal from '@/components/mypage/logout-modal';
+import { supabase } from '@/lib/supabase';
 
 const MyPage = () => {
   const router = useRouter();
   const [isEditMode, setIsEditMode] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const userInfo = {
-    name: '사용자',
-    email: 'user@example.com',
-    grade: '실버',
-    reportCount: '12',
-  };
+  useEffect(() => {
+    const fetchMyInfo = async () => {
+      try {
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*')
+          .limit(1)
+          .single();
+
+        if (userError) throw userError;
+
+        const { count, error: countError } = await supabase
+          .from('reports')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userData.id);
+
+        if (countError) throw countError;
+
+        setUserInfo({
+          name: userData.nickname || '사용자',
+          email: userData.email || '',
+          grade: userData.grade || '브론즈',
+          reportCount: count || 0,
+        });
+      } catch (error) {
+        console.error('내 정보를 불러오는데 실패했습니다:', error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMyInfo();
+  }, []);
 
   const handleToggleEdit = () => {
     setIsEditMode((prev) => !prev);
@@ -38,7 +68,11 @@ const MyPage = () => {
       <Header />
 
       <div className="p-5">
-        {isEditMode ? (
+        {isLoading ? (
+          <div className="text-center py-20 text-gray-500 font-medium">
+            내 정보를 불러오는 중입니다...
+          </div>
+        ) : isEditMode ? (
           <EditForm
             initialData={userInfo}
             onSave={handleSaveProfile}

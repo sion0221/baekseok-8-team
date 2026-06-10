@@ -6,7 +6,7 @@ const EditForm = ({ initialData, onSave, onCancel }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasPasswordChanged, setHasPasswordChanged] = useState(false);
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -18,7 +18,11 @@ const EditForm = ({ initialData, onSave, onCancel }) => {
       email: `${emailId}@${emailDomain}`,
     };
 
-    onSave(updatedData);
+    try {
+      await onSave(updatedData);
+    } catch (error) {
+      setIsSubmitting(false);
+    }
   };
 
   const initialEmail = initialData?.email || 'user@example.com';
