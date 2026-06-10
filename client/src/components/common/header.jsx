@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronLeft } from 'lucide-react';
@@ -9,6 +12,13 @@ import { NAV_ITEMS, BACK_BUTTON_PATHS } from '@/constants';
 
 export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    handleSidebarClose();
+    router.replace('/sign-in');
+  };
   const pathname = usePathname();
 
   const handleSidebarOpen = () => setIsSidebarOpen(true);
@@ -22,7 +32,7 @@ export default function Header() {
     return (
       <header className="fixed top-0 right-0 left-0 z-40 h-[56px] bg-white border-b border-gray-100">
         <div className="flex items-center w-full max-w-[768px] h-full mx-auto px-4">
-          <Link href={pathname.startsWith('/report-board/') ? '/report-board' : '/'} aria-label="뒤로가기">
+          <Link href={pathname.startsWith('/report-board/') ? '/report-board' : '/'} aria-label="뒤로가기" className="p-1 hover:bg-gray-100 rounded-[8px] transition-colors">
             <ChevronLeft size={24} className="text-gray-700" />
           </Link>
           <span className="ml-2 text-[16px] font-medium text-gray-900">
@@ -41,19 +51,19 @@ export default function Header() {
         <div className="flex items-center justify-between w-full max-w-[768px] h-full mx-auto px-4">
           <button
             onClick={handleSidebarOpen}
-            className="p-1 text-gray-700"
+            className="p-1 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-[8px] transition-colors cursor-pointer"
             aria-label="메뉴 열기"
           >
             <Menu size={22} />
           </button>
 
-          <Link href="/" className="absolute left-1/2 -translate-x-1/2">
+          <Link href="/main" className="absolute left-1/2 -translate-x-1/2">
             <Image src="/logo.svg" alt="로고" width={40} height={40} />
           </Link>
 
           <Link
             href="/mypage"
-            className="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full bg-gray-100"
+            className="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
             aria-label="프로필"
           >
             <span className="text-[13px] text-gray-400">👤</span>
@@ -77,7 +87,7 @@ export default function Header() {
           <span className="text-[15px] font-semibold text-gray-900">메뉴</span>
           <button
             onClick={handleSidebarClose}
-            className="text-gray-400"
+            className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-[8px] transition-colors cursor-pointer"
             aria-label="메뉴 닫기"
           >
             <X size={20} />
@@ -99,6 +109,15 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+        <div className="absolute bottom-0 left-0 right-0 px-4 py-4 border-t border-gray-100">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-[8px] text-[14px] text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+          >
+            <LogOut size={16} />
+            로그아웃
+          </button>
+        </div>
       </aside>
     </>
   );

@@ -1,10 +1,14 @@
-import LoginCard from "@/components/Login/LoginCard";
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
-  return (
-    <>
-      {/* 예시 컴포넌트(로그인 카드) */}
-      <LoginCard />
-    </>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/sign-in');
+  }, [router]);
+
+  return null;
 }
