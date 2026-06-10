@@ -12,6 +12,7 @@ export async function classifyKickboard(file) {
 
   const res = await fetch(`${AI_SERVER_URL}/classify`, {
     method: 'POST',
+    headers: { 'ngrok-skip-browser-warning': 'true' },
     body: formData,
   });
 
