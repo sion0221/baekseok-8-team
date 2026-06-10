@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { CheckCircle, Check, X } from 'lucide-react';
 import { VIOLATION_TYPES, KICKBOARD_COMPANIES } from '@/constants';
 import { supabase } from '@/lib/supabase';
+import { classifyKickboard } from '@/lib/ai';
 
 export default function ReportPage() {
   const [step, setStep] = useState(1);
@@ -16,6 +17,8 @@ export default function ReportPage() {
   const [company, setCompany] = useState('');
   const [memo, setMemo] = useState('');
   const [nearbyPlace, setNearbyPlace] = useState('');
+  const [aiResult, setAiResult] = useState(null); // AI 판별 결과
+  const [aiChecking, setAiChecking] = useState(false); // 판별 진행중
   const mapRef = useRef(null);
   const cameraInputRef = useRef(null);
   const galleryInputRef = useRef(null);
@@ -26,11 +29,31 @@ export default function ReportPage() {
   const handleCompanySelect = (e) => setCompany(e.target.value);
   const handleMemoChange = (e) => setMemo(e.target.value);
 
-  const handlePhotoCapture = (e) => {
+  const handlePhotoCapture = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     if (photo) URL.revokeObjectURL(photo);
     setPhoto(URL.createObjectURL(file));
+
+    // 사진 업로드 즉시 AI 판별 요청
+    setAiResult(null);
+    setAiChecking(true);
+    try {
+      const result = await classifyKickboard(file);
+      setAiResult(result);
+    } catch (err) {
+      console.error(err);
+      setAiResult({ error: true });
+    } finally {
+      setAiChecking(false);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    if (photo) URL.revokeObjectURL(photo);
+    setPhoto(null);
+    setAiResult(null);
+    setAiChecking(false);
   };
 
   const handleSubmit = async () => {
@@ -45,16 +68,35 @@ export default function ReportPage() {
 
       if (storageError) return;
 
+      // AI 판별 결과로 접수/반려 결정
+      const isKickboard = aiResult?.is_kickboard === true;
+      const aiErrored = !aiResult || aiResult.error;
+
+      let status;
+      let aiResultText;
+      if (aiErrored) {
+        // AI 서버 미응답 시 사람이 확인하도록 일단 접수
+        status = '접수';
+        aiResultText = 'AI 판별 미수행 (서버 미응답)';
+      } else if (isKickboard) {
+        status = '접수';
+        aiResultText = `킥보드 인식됨 (신뢰도 ${aiResult.confidence}%)`;
+      } else {
+        status = '반려';
+        aiResultText = '킥보드 미인식 — AI 1차 자동 반려';
+      }
+
       const { error } = await supabase.from('reports').insert({
         image_url: storageData?.path,
         latitude: location.lat,
         longitude: location.lng,
         kickboard_company: company,
         violation_type: violationType,
-        status: '접수',
+        status,
+        ai_result: aiResultText,
       });
 
-      if (!error) handleNextStep();
+      if (!error) setStep(3);
     } catch (err) {
       console.error(err);
     }
@@ -144,6 +186,9 @@ export default function ReportPage() {
     typeof navigator !== 'undefined' &&
     /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+  const rejected =
+    aiResult && !aiResult.error && aiResult.is_kickboard === false;
+
   return (
     <div className="py-4">
       <div className="flex items-center gap-2 px-4 mb-6">
@@ -204,7 +249,7 @@ export default function ReportPage() {
           <button
             onClick={handleNextStep}
             disabled={!location}
-            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity cursor-pointer hover:bg-[#4A56DB] disabled:cursor-not-allowed"
+            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity"
           >
             다음
           </button>
@@ -214,12 +259,12 @@ export default function ReportPage() {
       {step === 2 && (
         <div className="flex flex-col gap-4">
           <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-            <p className="text-[12px] text-gray-400 mb-3">사진 첨부 <span className="text-red-500 text-[14px]">*</span></p>
+            <p className="text-[12px] text-gray-400 mb-3">사진 첨부</p>
 
             <div className="flex gap-2 mb-3">
               <button
                 onClick={() => cameraInputRef.current?.click()}
-                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-[#5A66EB] bg-[#5A66EB]/10 gap-1 cursor-pointer hover:bg-[#5A66EB]/20 transition-colors"
+                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-[#5A66EB] bg-[#5A66EB]/10 gap-1"
               >
                 <span className="text-[20px]">📷</span>
                 <span className="text-[10px] text-[#5A66EB]">촬영</span>
@@ -235,7 +280,7 @@ export default function ReportPage() {
 
               <button
                 onClick={() => galleryInputRef.current?.click()}
-                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-gray-200 gap-1 cursor-pointer hover:border-gray-400 transition-colors"
+                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-gray-200 gap-1"
               >
                 <span className="text-[20px]">🖼️</span>
                 <span className="text-[10px] text-gray-400">업로드</span>
@@ -258,30 +303,71 @@ export default function ReportPage() {
                   className="object-cover"
                 />
                 <button
-                  onClick={() => {
-                    URL.revokeObjectURL(photo);
-                    setPhoto(null);
-                  }}
-                  className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 rounded-bl-[6px] bg-black/50 text-white cursor-pointer hover:bg-black/70 transition-colors"
+                  onClick={handleRemovePhoto}
+                  className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 rounded-bl-[6px] bg-black/50 text-white"
                   aria-label="사진 삭제"
                 >
                   <X size={12} />
                 </button>
               </div>
             )}
+
+            {/* AI 판별 결과 */}
+            {photo && (
+              <div className="mt-3 rounded-[8px] border-[0.5px] border-gray-100 p-3">
+                <p className="text-[12px] text-gray-400 mb-2">AI 판별 결과</p>
+
+                {aiChecking && (
+                  <p className="text-[13px] text-[#5A66EB]">
+                    AI가 사진을 분석하는 중...
+                  </p>
+                )}
+
+                {!aiChecking && aiResult?.error && (
+                  <p className="text-[13px] text-red-500">
+                    AI 서버에 연결할 수 없어요. 서버(python app.py)가 켜져
+                    있는지 확인해주세요.
+                  </p>
+                )}
+
+                {!aiChecking && aiResult && !aiResult.error && (
+                  <>
+                    {aiResult.is_kickboard ? (
+                      <p className="flex items-center gap-1 text-[13px] font-medium text-green-600">
+                        <CheckCircle size={15} />
+                        킥보드 인식됨 · 신뢰도 {aiResult.confidence}%
+                      </p>
+                    ) : (
+                      <p className="flex items-center gap-1 text-[13px] font-medium text-red-500">
+                        <X size={15} />
+                        킥보드를 찾지 못했어요. 제출 시 자동 반려될 수 있어요.
+                      </p>
+                    )}
+
+                    {aiResult.result_image && (
+                      <img
+                        src={`data:image/jpeg;base64,${aiResult.result_image}`}
+                        alt="AI 분석 결과"
+                        className="mt-2 w-full max-w-[200px] rounded-[8px] border-[0.5px] border-gray-200"
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-            <p className="text-[12px] text-gray-400 mb-3">위반 유형 <span className="text-red-500 text-[14px]">*</span></p>
+            <p className="text-[12px] text-gray-400 mb-3">위반 유형</p>
             <ul className="grid grid-cols-2 gap-2 list-none p-0 m-0">
               {VIOLATION_TYPES.map((type) => (
                 <li key={type}>
                   <button
                     onClick={() => handleViolationSelect(type)}
-                    className={`w-full rounded-[8px] border-[0.5px] py-3 px-3 text-[13px] text-left transition-colors cursor-pointer ${
+                    className={`w-full rounded-[8px] border-[0.5px] py-3 px-3 text-[13px] text-left transition-colors ${
                       violationType === type
                         ? 'border-[#5A66EB] bg-[#5A66EB]/10 text-[#5A66EB] font-medium'
-                        : 'border-gray-200 text-gray-600 hover:border-[#5A66EB] hover:text-[#5A66EB]'
+                        : 'border-gray-200 text-gray-600'
                     }`}
                   >
                     {type}
@@ -313,7 +399,7 @@ export default function ReportPage() {
                 </dd>
               </div>
               <div className="flex items-center justify-between py-2">
-                <dt className="text-[13px] text-gray-400">킥보드 브랜드 <span className="text-red-500 text-[14px]">*</span></dt>
+                <dt className="text-[13px] text-gray-400">킥보드 브랜드</dt>
                 <dd className="flex items-center gap-1">
                   <select
                     value={company}
@@ -372,41 +458,68 @@ export default function ReportPage() {
               !photo ||
               !violationType ||
               !company ||
+              aiChecking ||
               (violationType === '기타' && !memo.trim())
             }
-            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity flex items-center justify-center gap-2 cursor-pointer hover:bg-[#4A56DB] disabled:cursor-not-allowed"
+            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
           >
             <CheckCircle size={18} />
-            신고 제출하기
+            {aiChecking ? 'AI 분석 중...' : '신고 제출하기'}
           </button>
         </div>
       )}
 
       {step === 3 && (
         <div className="flex flex-col items-center gap-4 py-8">
-          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-50">
-            <CheckCircle
-              size={40}
-              className="text-green-500"
-              strokeWidth={1.5}
-            />
-          </div>
-          <h2 className="text-[20px] font-medium text-gray-900">
-            신고가 접수되었습니다!
-          </h2>
-          <p className="text-[14px] text-center text-gray-400">
-            신고가 처리되면 알려드릴게요.
-          </p>
-          <div className="w-full rounded-[12px] border-[0.5px] border-gray-100 bg-white p-4">
-            <p className="text-[13px] text-gray-400 mb-1">예상 처리 시간</p>
-            <p className="text-[20px] font-medium text-[#5A66EB]">약 15~20분</p>
-          </div>
-          <Link
-            href="/"
-            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white text-center"
-          >
-            홈으로 돌아가기
-          </Link>
+          {rejected ? (
+            <>
+              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-50">
+                <X size={40} className="text-red-500" strokeWidth={1.5} />
+              </div>
+              <h2 className="text-[20px] font-medium text-gray-900">
+                신고가 반려되었습니다
+              </h2>
+              <p className="text-[14px] text-center text-gray-400">
+                AI 1차 판별에서 킥보드를 찾지 못했어요.
+                <br />
+                킥보드가 잘 보이는 사진으로 다시 신고해주세요.
+              </p>
+              <Link
+                href="/"
+                className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white text-center"
+              >
+                홈으로 돌아가기
+              </Link>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-50">
+                <CheckCircle
+                  size={40}
+                  className="text-green-500"
+                  strokeWidth={1.5}
+                />
+              </div>
+              <h2 className="text-[20px] font-medium text-gray-900">
+                신고가 접수되었습니다!
+              </h2>
+              <p className="text-[14px] text-center text-gray-400">
+                신고가 처리되면 알려드릴게요.
+              </p>
+              <div className="w-full rounded-[12px] border-[0.5px] border-gray-100 bg-white p-4">
+                <p className="text-[13px] text-gray-400 mb-1">예상 처리 시간</p>
+                <p className="text-[20px] font-medium text-[#5A66EB]">
+                  약 15~20분
+                </p>
+              </div>
+              <Link
+                href="/"
+                className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white text-center"
+              >
+                홈으로 돌아가기
+              </Link>
+            </>
+          )}
         </div>
       )}
     </div>
