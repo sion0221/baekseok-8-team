@@ -204,7 +204,7 @@ export default function ReportPage() {
           <button
             onClick={handleNextStep}
             disabled={!location}
-            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity"
+            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity cursor-pointer hover:bg-[#4A56DB] disabled:cursor-not-allowed"
           >
             다음
           </button>
@@ -214,12 +214,12 @@ export default function ReportPage() {
       {step === 2 && (
         <div className="flex flex-col gap-4">
           <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-            <p className="text-[12px] text-gray-400 mb-3">사진 첨부</p>
+            <p className="text-[12px] text-gray-400 mb-3">사진 첨부 <span className="text-red-500 text-[14px]">*</span></p>
 
             <div className="flex gap-2 mb-3">
               <button
                 onClick={() => cameraInputRef.current?.click()}
-                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-[#5A66EB] bg-[#5A66EB]/10 gap-1"
+                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-[#5A66EB] bg-[#5A66EB]/10 gap-1 cursor-pointer hover:bg-[#5A66EB]/20 transition-colors"
               >
                 <span className="text-[20px]">📷</span>
                 <span className="text-[10px] text-[#5A66EB]">촬영</span>
@@ -235,7 +235,7 @@ export default function ReportPage() {
 
               <button
                 onClick={() => galleryInputRef.current?.click()}
-                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-gray-200 gap-1"
+                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-gray-200 gap-1 cursor-pointer hover:border-gray-400 transition-colors"
               >
                 <span className="text-[20px]">🖼️</span>
                 <span className="text-[10px] text-gray-400">업로드</span>
@@ -262,7 +262,7 @@ export default function ReportPage() {
                     URL.revokeObjectURL(photo);
                     setPhoto(null);
                   }}
-                  className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 rounded-bl-[6px] bg-black/50 text-white"
+                  className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 rounded-bl-[6px] bg-black/50 text-white cursor-pointer hover:bg-black/70 transition-colors"
                   aria-label="사진 삭제"
                 >
                   <X size={12} />
@@ -272,16 +272,16 @@ export default function ReportPage() {
           </div>
 
           <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-            <p className="text-[12px] text-gray-400 mb-3">위반 유형</p>
+            <p className="text-[12px] text-gray-400 mb-3">위반 유형 <span className="text-red-500 text-[14px]">*</span></p>
             <ul className="grid grid-cols-2 gap-2 list-none p-0 m-0">
               {VIOLATION_TYPES.map((type) => (
                 <li key={type}>
                   <button
                     onClick={() => handleViolationSelect(type)}
-                    className={`w-full rounded-[8px] border-[0.5px] py-3 px-3 text-[13px] text-left transition-colors ${
+                    className={`w-full rounded-[8px] border-[0.5px] py-3 px-3 text-[13px] text-left transition-colors cursor-pointer ${
                       violationType === type
                         ? 'border-[#5A66EB] bg-[#5A66EB]/10 text-[#5A66EB] font-medium'
-                        : 'border-gray-200 text-gray-600'
+                        : 'border-gray-200 text-gray-600 hover:border-[#5A66EB] hover:text-[#5A66EB]'
                     }`}
                   >
                     {type}
@@ -313,7 +313,7 @@ export default function ReportPage() {
                 </dd>
               </div>
               <div className="flex items-center justify-between py-2">
-                <dt className="text-[13px] text-gray-400">킥보드 브랜드</dt>
+                <dt className="text-[13px] text-gray-400">킥보드 브랜드 <span className="text-red-500 text-[14px]">*</span></dt>
                 <dd className="flex items-center gap-1">
                   <select
                     value={company}
@@ -374,7 +374,7 @@ export default function ReportPage() {
               !company ||
               (violationType === '기타' && !memo.trim())
             }
-            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
+            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity flex items-center justify-center gap-2 cursor-pointer hover:bg-[#4A56DB] disabled:cursor-not-allowed"
           >
             <CheckCircle size={18} />
             신고 제출하기

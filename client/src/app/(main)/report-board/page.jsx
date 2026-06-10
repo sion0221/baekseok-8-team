@@ -48,10 +48,10 @@ export default function ReportBoardPage() {
           <button
             key={filter}
             onClick={() => handleFilterClick(filter)}
-            className={`text-[12px] px-3 py-1 rounded-full border whitespace-nowrap transition-colors ${
+            className={`text-[12px] px-3 py-1 rounded-full border whitespace-nowrap transition-colors cursor-pointer ${
               activeFilter === filter
                 ? 'bg-[#5A66EB] text-white border-[#5A66EB]'
-                : 'bg-white text-gray-500 border-gray-200'
+                : 'bg-white text-gray-500 border-gray-200 hover:border-[#5A66EB] hover:text-[#5A66EB]'
             }`}
           >
             {filter}

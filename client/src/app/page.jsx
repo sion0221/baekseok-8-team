@@ -1,9 +1,14 @@
-import MainPage from '@/app/main/page';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
-  return (
-    <>
-      <MainPage />
-    </>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/sign-in');
+  }, [router]);
+
+  return null;
 }

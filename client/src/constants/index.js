@@ -1,7 +1,7 @@
 import { Home, Camera, ClipboardList, User } from 'lucide-react';
 
 export const NAV_ITEMS = [
-  { label: '홈', href: '/', icon: Home },
+  { label: '홈', href: '/main', icon: Home },
   { label: '신고하기', href: '/report', icon: Camera },
   { label: '신고게시판', href: '/report-board', icon: ClipboardList },
   { label: '마이페이지', href: '/mypage', icon: User },

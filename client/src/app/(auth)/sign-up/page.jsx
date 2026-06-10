@@ -216,7 +216,7 @@ export default function SignUpPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC]">
-      <Card className="w-full max-w-[390px] border-none shadow-none bg-transparent">
+      <Card className="w-full max-w-[390px] border-[#E2E8F0] rounded-[16px] shadow-sm bg-[#FFFFFF]">
         <CardHeader className="flex flex-row items-center gap-[12px] pt-[0px] pb-[32px] px-[24px]">
           <Link
             href="/sign-in"
