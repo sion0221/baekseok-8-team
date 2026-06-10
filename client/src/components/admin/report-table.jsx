@@ -52,32 +52,28 @@ const ReportTable = ({ reports = [] }) => {
   };
 
   return (
-    <>
-      <div className="bg-white pb-4 shadow-sm">
-        <div className="px-5 mt-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">
-            신고 접수 목록
-          </h2>
-          <ul className="flex gap-2 overflow-x-auto hide-scrollbar">
-            {['전체', '미처리', '처리중', '처리 완료'].map((tab) => (
-              <li key={tab} className="shrink-0">
-                <button
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
-                    activeTab === tab
-                      ? 'bg-[#5A66EB] text-white border-[#5A66EB]'
-                      : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  {tab}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+    <div className="w-full space-y-6">
+      <div>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">신고 접수 목록</h2>
+        <ul className="flex gap-2 overflow-x-auto hide-scrollbar">
+          {['전체', '미처리', '처리중', '처리 완료'].map((tab) => (
+            <li key={tab} className="shrink-0">
+              <button
+                onClick={() => setActiveTab(tab)}
+                className={`px-5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+                  activeTab === tab
+                    ? 'bg-[#5A66EB] text-white border-[#5A66EB]'
+                    : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                {tab}
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="p-5 space-y-3">
+      <div className="space-y-3">
         {filteredReports.map((report) => {
           const currentStatus = report.status || '접수됨';
           return (
@@ -116,7 +112,7 @@ const ReportTable = ({ reports = [] }) => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

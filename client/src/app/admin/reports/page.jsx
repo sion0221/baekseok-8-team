@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/common/header';
+import Footer from '@/components/common/footer';
 import ReportTable from '@/components/admin/report-table';
 import { supabase } from '@/lib/supabase';
 
@@ -29,17 +30,17 @@ const ReportListPage = () => {
     fetchReports();
   }, []);
 
+  if (isLoading) return null;
+
   return (
-    <div className="max-w-md mx-auto bg-[#F8F9FA] min-h-screen border-x border-gray-200 pb-20">
+    <div className="w-full bg-[#F8F9FA] min-h-screen relative pt-[56px] pb-20">
       <Header />
 
-      {isLoading ? (
-        <div className="text-center py-20 text-gray-500 text-sm">
-          데이터를 불러오는 중입니다...
-        </div>
-      ) : (
+      <div className="max-w-[768px] mx-auto px-5 pt-6 pb-5">
         <ReportTable reports={reports} />
-      )}
+      </div>
+
+      <Footer />
     </div>
   );
 };

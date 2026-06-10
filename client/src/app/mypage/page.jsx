@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, Bell, LogOut, UserMinus } from 'lucide-react';
 import Header from '@/components/common/header';
+import Footer from '@/components/common/footer';
 import ProfileCard from '@/components/mypage/profile-card';
 import EditForm from '@/components/mypage/edit-form';
 import LogoutModal from '@/components/mypage/logout-modal';
@@ -63,16 +64,14 @@ const MyPage = () => {
     router.push('/login');
   };
 
+  if (isLoading) return null;
+
   return (
-    <div className="max-w-md mx-auto bg-[#F8F9FA] min-h-screen border-x border-gray-200 pb-20 relative">
+    <div className="w-full bg-[#F8F9FA] min-h-screen relative pt-[56px] pb-20">
       <Header />
 
-      <div className="p-5">
-        {isLoading ? (
-          <div className="text-center py-20 text-gray-500 font-medium">
-            내 정보를 불러오는 중입니다...
-          </div>
-        ) : isEditMode ? (
+      <div className="max-w-[768px] mx-auto px-5 py-5">
+        {isEditMode ? (
           <EditForm
             initialData={userInfo}
             onSave={handleSaveProfile}
@@ -131,6 +130,8 @@ const MyPage = () => {
           </>
         )}
       </div>
+
+      <Footer />
 
       <LogoutModal
         isOpen={isLogoutModalOpen}

@@ -1,19 +1,20 @@
 'use client';
 
 import React from 'react';
-import { User } from 'lucide-react';
 
 const ProfileCard = ({ userInfo, onToggleEdit }) => {
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center">
-            <User className="w-7 h-7 text-gray-600" fill="currentColor" />
+          <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+            <span className="text-[26px] text-gray-400 select-none">👤</span>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">{userInfo.name}</h2>
-            <p className="text-sm text-gray-500">{userInfo.email}</p>
+            <h2 className="text-xl font-bold text-gray-900">
+              {userInfo?.name}
+            </h2>
+            <p className="text-sm text-gray-500">{userInfo?.email}</p>
           </div>
         </div>
         <button
@@ -27,13 +28,13 @@ const ProfileCard = ({ userInfo, onToggleEdit }) => {
       <div className="flex gap-3">
         <div className="flex-1 bg-[#F8F9FA] rounded-xl p-4 flex flex-col items-center justify-center border border-gray-100">
           <span className="text-lg font-bold text-[#5A66EB] mb-1">
-            {userInfo.grade}
+            {userInfo?.grade}
           </span>
           <span className="text-xs text-gray-500 font-medium">현재 등급</span>
         </div>
         <div className="flex-1 bg-[#F8F9FA] rounded-xl p-4 flex flex-col items-center justify-center border border-gray-100">
           <span className="text-lg font-bold text-[#5A66EB] mb-1">
-            {userInfo.reportCount}
+            {userInfo?.reportCount}
           </span>
           <span className="text-xs text-gray-500 font-medium">
             총 신고 횟수
