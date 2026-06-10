@@ -32,10 +32,8 @@ export default function ResetPasswordPage() {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const isEmailValid = emailRegex.test(email);
 
-  const handleResetSubmit = async (e) => {
-    e.preventDefault();
+  const sendResetEmail = async () => {
     if (!isEmailValid || isLoading) return;
-
     setIsLoading(true);
     setErrorMessage('');
     try {
@@ -45,12 +43,15 @@ export default function ResetPasswordPage() {
       if (error) throw error;
       setIsSubmitted(true);
     } catch (err) {
-      setErrorMessage(
-        '존재하지 않는 회원이거나 이메일 전송 중 에러가 발생했습니다.',
-      );
+      setErrorMessage('존재하지 않는 회원이거나 이메일 전송 중 에러가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleResetSubmit = async (e) => {
+    e.preventDefault();
+    await sendResetEmail();
   };
 
   return (
@@ -87,6 +88,16 @@ export default function ResetPasswordPage() {
               >
                 로그인 화면으로 이동
               </Link>
+              <div className="flex items-center gap-[4px] mt-[16px] text-[12px] text-[#64748B]">
+                <span>메일이 오지 않았나요?</span>
+                <button
+                  type="button"
+                  onClick={sendResetEmail}
+                  className="text-[#5A66EB] underline underline-offset-2 cursor-pointer hover:text-[#4852D4] transition-colors"
+                >
+                  재전송
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleResetSubmit} className="flex flex-col w-full">

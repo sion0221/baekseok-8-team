@@ -230,6 +230,18 @@ export default function FindIdPage() {
                       <span>{errorMessage}</span>
                     </div>
                   )}
+                  {isCodeSent && (
+                    <div className="flex items-center gap-[4px] text-[12px] text-[#64748B]">
+                      <span>인증번호가 오지 않았나요?</span>
+                      <button
+                        type="button"
+                        onClick={handleSendCodeClick}
+                        className="text-[#5A66EB] underline underline-offset-2 cursor-pointer hover:text-[#4852D4] transition-colors"
+                      >
+                        재전송
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 

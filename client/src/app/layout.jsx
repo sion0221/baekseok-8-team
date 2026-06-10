@@ -4,7 +4,26 @@ import Script from 'next/script';
 
 export const metadata = {
   title: '킥보드 신고 서비스',
-  description: '교내 불법 주정차 킥보드 신고 서비스',
+  description: '교내 불법 주정차 킥보드를 AI로 자동 감지하고 신고하는 서비스',
+  icons: {
+    icon: '/logo.svg',
+  },
+  openGraph: {
+    title: '[BU] 킥보드 신고 서비스',
+    description: '교내 불법 주정차 킥보드를 AI로 자동 감지하고 신고하는 서비스',
+    url: 'https://baekseok-8.vercel.app',
+    siteName: '킥보드 신고 서비스',
+    images: [
+      {
+        url: 'https://baekseok-8.vercel.app/logo.svg',
+        width: 400,
+        height: 400,
+        alt: '킥보드 신고 서비스 로고',
+      },
+    ],
+    locale: 'ko_KR',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({ children }) {
