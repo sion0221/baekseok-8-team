@@ -34,6 +34,12 @@ export default function MyPage() {
   useEffect(() => {
     const fetchMyInfo = async () => {
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          router.replace('/sign-in');
+          return;
+        }
+
         const { data: userData, error: userError } = await supabase
           .from('users')
           .select('*')
@@ -73,9 +79,11 @@ export default function MyPage() {
     setIsEditMode(false);
   };
 
-  const handleConfirmLogout = () => {
+  const handleConfirmLogout = async () => {
     setIsLogoutModalOpen(false);
-    router.push('/login');
+    await supabase.auth.signOut();
+    localStorage.removeItem('username_cache');
+    router.replace('/sign-in');
   };
 
   if (isLoading) return null;

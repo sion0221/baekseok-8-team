@@ -82,6 +82,7 @@ export default function SignInPage() {
             height={100}
             priority
             className="rounded-full"
+            style={{ width: 100, height: 100, objectFit: 'cover' }}
           />
           <CardTitle className="text-[24px] font-bold text-[#073462]">
             로그인
