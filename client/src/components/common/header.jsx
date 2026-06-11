@@ -30,12 +30,12 @@ export default function Header() {
 
   if (isBackButtonPage) {
     return (
-      <header className="fixed top-0 right-0 left-0 z-40 h-[56px] bg-white border-b border-gray-100">
+      <header className="fixed top-0 right-0 left-0 z-40 h-[56px] bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center w-full max-w-[768px] h-full mx-auto px-4">
-          <Link href={pathname.startsWith('/report-board/') ? '/report-board' : '/'} aria-label="뒤로가기" className="p-1 hover:bg-gray-100 rounded-[8px] transition-colors">
-            <ChevronLeft size={24} className="text-gray-700" />
+          <Link href={pathname.startsWith('/report-board/') ? '/report-board' : pathname.startsWith('/mypage/') ? '/mypage' : '/'} aria-label="뒤로가기" className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-[8px] transition-colors">
+            <ChevronLeft size={24} className="text-gray-700 dark:text-gray-300" />
           </Link>
-          <span className="ml-2 text-[16px] font-medium text-gray-900">
+          <span className="ml-2 text-[16px] font-medium text-gray-900 dark:text-gray-100">
             {pathname === '/report' && '신고하기'}
             {pathname === '/map' && '전체 신고 지도'}
             {pathname.startsWith('/report-board/') && '신고 상세'}
@@ -47,11 +47,11 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-0 right-0 left-0 z-40 h-[56px] bg-white border-b border-gray-100">
+      <header className="fixed top-0 right-0 left-0 z-40 h-[56px] bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between w-full max-w-[768px] h-full mx-auto px-4">
           <button
             onClick={handleSidebarOpen}
-            className="p-1 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-[8px] transition-colors cursor-pointer"
+            className="p-1 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-[8px] transition-colors cursor-pointer"
             aria-label="메뉴 열기"
           >
             <Menu size={22} />
@@ -79,15 +79,15 @@ export default function Header() {
       )}
 
       <aside
-        className={`fixed top-0 left-0 z-50 w-[260px] h-full bg-white transform transition-transform duration-300 ${
+        className={`fixed top-0 left-0 z-50 w-[260px] h-full bg-white dark:bg-gray-800 transform transition-transform duration-300 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between h-[56px] px-5 border-b border-gray-100">
-          <span className="text-[15px] font-semibold text-gray-900">메뉴</span>
+        <div className="flex items-center justify-between h-[56px] px-5 border-b border-gray-100 dark:border-gray-700">
+          <span className="text-[15px] font-semibold text-gray-900 dark:text-gray-100">메뉴</span>
           <button
             onClick={handleSidebarClose}
-            className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-[8px] transition-colors cursor-pointer"
+            className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-[8px] transition-colors cursor-pointer"
             aria-label="메뉴 닫기"
           >
             <X size={20} />
@@ -102,17 +102,17 @@ export default function Header() {
               className={`px-4 py-3 rounded-[8px] text-[14px] transition-colors ${
                 pathname === item.href
                   ? 'bg-[#5A66EB]/10 text-[#5A66EB] font-medium'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               {item.label}
             </Link>
           ))}
         </nav>
-        <div className="absolute bottom-0 left-0 right-0 px-4 py-4 border-t border-gray-100">
+        <div className="absolute bottom-0 left-0 right-0 px-4 py-4 border-t border-gray-100 dark:border-gray-700">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-[8px] text-[14px] text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-[8px] text-[14px] text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors cursor-pointer"
           >
             <LogOut size={16} />
             로그아웃

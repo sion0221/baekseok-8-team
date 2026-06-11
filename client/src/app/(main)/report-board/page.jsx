@@ -51,7 +51,7 @@ export default function ReportBoardPage() {
             className={`text-[12px] px-3 py-1 rounded-full border whitespace-nowrap transition-colors cursor-pointer ${
               activeFilter === filter
                 ? 'bg-[#5A66EB] text-white border-[#5A66EB]'
-                : 'bg-white text-gray-500 border-gray-200 hover:border-[#5A66EB] hover:text-[#5A66EB]'
+                : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-600 hover:border-[#5A66EB] hover:text-[#5A66EB]'
             }`}
           >
             {filter}
@@ -65,8 +65,8 @@ export default function ReportBoardPage() {
         </div>
       ) : (
         <>
-          <p className="text-[13px] text-gray-400 mb-3">
-            총 {filtered.length}건
+          <p className="text-[13px] text-gray-400 dark:text-gray-500 mb-3">
+          총 {filtered.length}건
           </p>
           <ul className="flex flex-col gap-3 list-none p-0 m-0">
             {filtered.map((report) => {
@@ -76,10 +76,10 @@ export default function ReportBoardPage() {
               return (
                 <li
                   key={report.id}
-                  className="bg-white border-[0.5px] border-gray-100 rounded-[12px] px-4 py-3"
+                  className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] px-4 py-3"
                 >
                   <div className="flex items-start gap-3 mb-1">
-                    <div className="w-[48px] h-[48px] rounded-[8px] bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div className="w-[48px] h-[48px] rounded-[8px] bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden flex-shrink-0">
                       {COMPANY_LOGO[
                         report.kickboard_company || report.ai_company
                       ] ? (
@@ -105,7 +105,7 @@ export default function ReportBoardPage() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-[14px] font-medium text-gray-900">
+                        <span className="text-[14px] font-medium text-gray-900 dark:text-gray-100">
                           {report.kickboard_company ||
                             report.ai_company ||
                             '미확인'}{' '}
@@ -118,7 +118,7 @@ export default function ReportBoardPage() {
                         </span>
                       </div>
 
-                      <p className="text-[12px] text-gray-400 mb-2">
+                      <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-2">
                         {new Date(report.created_at).toLocaleString('ko-KR')}
                       </p>
 

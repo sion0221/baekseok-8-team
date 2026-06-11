@@ -238,8 +238,8 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC]">
-      <Card className="w-full max-w-[390px] border-[#E2E8F0] rounded-[16px] shadow-sm bg-[#FFFFFF]">
+    <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC] dark:bg-gray-900">
+      <Card className="w-full max-w-[390px] border-[#E2E8F0] dark:border-gray-700 rounded-[16px] shadow-sm bg-[#FFFFFF] dark:bg-gray-800">
         <CardHeader className="flex flex-row items-center gap-[12px] pt-[0px] pb-[32px] px-[24px]">
           {step === 'verify' ? (
             <button
@@ -306,7 +306,7 @@ export default function SignUpPage() {
                     if (authCodeError) setAuthCodeError('');
                   }}
                   placeholder="8자리 인증코드 입력"
-                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                 />
                 {authCodeError && (
                   <div className="flex items-center gap-[6px] text-[12px] text-[#EF4444] font-medium">
@@ -396,7 +396,7 @@ export default function SignUpPage() {
                     required
                     value={formData.nickname}
                     onChange={handleInputChange}
-                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
                   {isNicknameChecking ? (
                     <div className="flex items-center gap-[6px] text-[12px] text-[#64748B] font-medium">
@@ -433,7 +433,7 @@ export default function SignUpPage() {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
                   {isEmailChecking ? (
                     <div className="flex items-center gap-[6px] text-[12px] text-[#64748B] font-medium">
@@ -465,7 +465,7 @@ export default function SignUpPage() {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
                   {formData.password && !isPasswordValid && (
                     <p className="text-[12px] text-[#EF4444]">
@@ -484,7 +484,7 @@ export default function SignUpPage() {
                     required
                     value={formData.passwordConfirm}
                     onChange={handleInputChange}
-                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
                   {formData.passwordConfirm && !isConfirmValid && (
                     <p className="text-[12px] text-[#EF4444]">

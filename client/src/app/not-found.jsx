@@ -6,7 +6,7 @@ export default function NotFound() {
       <div className="text-center">
         <p className="text-[36px] font-bold text-[#5A66EB] leading-none mb-2">404</p>
         <p className="text-[16px] font-medium text-gray-900 mb-1">페이지를 찾을 수 없어요</p>
-        <p className="text-[13px] text-gray-400">주소가 잘못되었거나 삭제된 페이지예요.</p>
+        <p className="text-[13px] text-gray-400 dark:text-gray-500">주소가 잘못되었거나 삭제된 페이지예요.</p>
       </div>
       <Link
         href="/main"

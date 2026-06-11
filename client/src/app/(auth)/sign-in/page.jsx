@@ -72,8 +72,8 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC]">
-      <Card className="w-full max-w-[390px] border-[#E2E8F0] rounded-[16px] shadow-sm bg-[#FFFFFF]">
+    <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC] dark:bg-gray-900">
+      <Card className="w-full max-w-[390px] border-[#E2E8F0] dark:border-gray-700 rounded-[16px] shadow-sm bg-[#FFFFFF] dark:bg-gray-800">
         <CardHeader className="flex flex-col items-center gap-[16px] pb-[24px]">
           <Image
             src="/logo.svg"
@@ -94,7 +94,7 @@ export default function SignInPage() {
             className="flex flex-col gap-[16px]"
           >
             <div className="flex flex-col gap-[8px]">
-              <label className="text-[14px] font-medium text-[#475569]">
+              <label className="text-[14px] font-medium text-[#475569] dark:text-gray-400">
                 이메일
               </label>
               <div className="relative flex items-center w-full">
@@ -105,13 +105,13 @@ export default function SignInPage() {
                   required
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full h-[48px] pl-[44px] pr-[16px] bg-[#F1F5F9] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  className="w-full h-[48px] pl-[44px] pr-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                 />
               </div>
             </div>
 
             <div className="flex flex-col gap-[8px]">
-              <label className="text-[14px] font-medium text-[#475569]">
+              <label className="text-[14px] font-medium text-[#475569] dark:text-gray-400">
                 비밀번호
               </label>
               <div className="relative flex items-center w-full">
@@ -122,7 +122,7 @@ export default function SignInPage() {
                   required
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full h-[48px] pl-[44px] pr-[16px] bg-[#F1F5F9] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  className="w-full h-[48px] pl-[44px] pr-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                 />
               </div>
             </div>

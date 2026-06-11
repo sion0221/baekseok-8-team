@@ -75,7 +75,7 @@ export default function UpdatePasswordPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC]">
+    <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC] dark:bg-gray-900">
       <Card className="w-full max-w-[390px] border-none shadow-none bg-transparent">
         <CardHeader className="pt-[0px] pb-[32px] px-[24px]">
           <CardTitle className="text-[22px] font-bold text-[#1E293B]">
@@ -108,7 +108,7 @@ export default function UpdatePasswordPage() {
                   required
                   value={password}
                   onChange={handlePasswordChange}
-                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   placeholder="새로운 비밀번호 입력"
                 />
 
@@ -142,7 +142,7 @@ export default function UpdatePasswordPage() {
                   required
                   value={passwordConfirm}
                   onChange={(e) => setPasswordConfirm(e.target.value)}
-                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   placeholder="비밀번호 다시 입력"
                 />
                 {passwordConfirm && !isConfirmValid && (

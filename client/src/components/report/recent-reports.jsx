@@ -25,7 +25,7 @@ export default function RecentReports() {
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-[15px] font-medium text-gray-900">최근 신고 내역</h2>
+        <h2 className="text-[15px] font-medium text-gray-900 dark:text-gray-100">최근 신고 내역</h2>
         <Link href="/report-board" className="text-[12px] text-[#5A66EB]">
           전체 보기
         </Link>
@@ -41,7 +41,7 @@ export default function RecentReports() {
               return (
                 <li
                   key={report.id}
-                  className="flex items-center gap-3 bg-white border-[0.5px] border-gray-100 rounded-[12px] px-4 py-3"
+                  className="flex items-center gap-3 bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] px-4 py-3"
                 >
                   <span style={{
                     display: 'inline-block',
@@ -52,7 +52,7 @@ export default function RecentReports() {
                     flexShrink: 0,
                   }} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] text-gray-800">
+                    <p className="text-[12px] text-gray-800 dark:text-gray-300">
                       {report.kickboard_company || report.ai_company || '미확인'} · {new Date(report.created_at).toLocaleString('ko-KR')}
                     </p>
                   </div>

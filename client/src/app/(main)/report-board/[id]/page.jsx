@@ -85,7 +85,7 @@ export default function ReportDetailPage() {
       <div className="w-8 h-8 rounded-full border-4 border-[#5A66EB]/20 border-t-[#5A66EB] animate-spin" />
     </div>
   );
-  if (!report) return <p className="p-4 text-[13px] text-gray-400">신고를 찾을 수 없어요.</p>;
+  if (!report) return <p className="p-4 text-[13px] text-gray-400 dark:text-gray-500">신고를 찾을 수 없어요.</p>;
 
   const status = REPORT_STATUS[report.status];
   const progressStep = report.status === '처리완료' ? 2 : 1;
@@ -93,8 +93,8 @@ export default function ReportDetailPage() {
 
   return (
     <div className="py-4 flex flex-col gap-3">
-      <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-        <p className="text-[12px] text-gray-400 mb-2">신고 사진</p>
+      <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] p-4">
+        <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-2">신고 사진</p>
         {report.image_url ? (
           <div className="w-[60%] mx-auto h-[280px] rounded-[8px] overflow-hidden bg-gray-50">
             <img
@@ -113,17 +113,17 @@ export default function ReportDetailPage() {
         )}
       </div>
 
-      <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-        <p className="text-[12px] text-gray-400 mb-2">신고 위치</p>
+      <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] p-4">
+        <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-2">신고 위치</p>
         <div
           ref={mapRef}
           className="w-full h-[140px] rounded-[8px] bg-gray-50"
         />
       </div>
 
-      <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-        <p className="text-[12px] text-gray-400 mb-2">신고 정보</p>
-        <dl className="flex flex-col divide-y divide-gray-100">
+      <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] p-4">
+        <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-2">신고 정보</p>
+        <dl className="flex flex-col divide-y divide-gray-100 dark:divide-gray-700">
           {[
             {
               label: '업체',
@@ -135,12 +135,12 @@ export default function ReportDetailPage() {
             },
           ].map(({ label, value }) => (
             <div key={label} className="flex items-center justify-between py-2">
-              <dt className="text-[13px] text-gray-400">{label}</dt>
-              <dd className="text-[13px] font-medium text-gray-900">{value}</dd>
+              <dt className="text-[13px] text-gray-400 dark:text-gray-500">{label}</dt>
+              <dd className="text-[13px] font-medium text-gray-900 dark:text-gray-100">{value}</dd>
             </div>
           ))}
           <div className="flex items-center justify-between py-2">
-            <dt className="text-[13px] text-gray-400">상태</dt>
+            <dt className="text-[13px] text-gray-400 dark:text-gray-500">상태</dt>
             <dd
               className={`text-[11px] font-medium px-2 py-1 rounded-full ${status?.bg} ${status?.text}`}
             >
@@ -150,8 +150,8 @@ export default function ReportDetailPage() {
         </dl>
       </div>
 
-      <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-        <p className="text-[12px] text-gray-400 mb-3">처리 현황</p>
+      <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] p-4">
+        <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-3">처리 현황</p>
 
         {report.status !== '반려' && (
           <div className="flex items-center gap-1 mb-4">

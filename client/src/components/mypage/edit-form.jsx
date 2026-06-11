@@ -4,20 +4,13 @@ import React, { useState } from 'react';
 
 const EditForm = ({ initialData, onSave, onCancel }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasPasswordChanged, setHasPasswordChanged] = useState(false);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    const emailId = e.target.emailId.value;
-    const emailDomain = e.target.emailDomain.value;
-
     const updatedData = {
       name: e.target.nickname.value,
-      email: `${emailId}@${emailDomain}`,
     };
-
     try {
       await onSave(updatedData);
     } catch (error) {
@@ -25,85 +18,59 @@ const EditForm = ({ initialData, onSave, onCancel }) => {
     }
   };
 
-  const initialEmail = initialData?.email || 'user@example.com';
-  const emailParts = initialEmail.split('@');
-  const initialId = emailParts[0] || '';
-  const initialDomain = emailParts.length > 1 ? emailParts[1] : '';
-
   return (
-    <div className="bg-white p-6 rounded-2xl w-full mx-auto border border-gray-100 shadow-sm">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-bold text-gray-900">회원정보 수정</h2>
-      </div>
+    <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] p-4">
+      <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-4">회원정보 수정</p>
 
-      <form onSubmit={handleFormSubmit} className="space-y-5">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            사용자 이름
-          </label>
+      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-[8px]">
+          <label className="text-[14px] font-medium text-[#1E293B]">사용자 이름</label>
           <input
             name="nickname"
-            defaultValue={initialData?.name || '사용자'}
-            className="w-full border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
+            defaultValue={initialData?.name || ''}
+            className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            이메일
-          </label>
-          <div className="flex items-center gap-2">
-            <input
-              name="emailId"
-              type="text"
-              defaultValue={initialId}
-              className="flex-1 min-w-0 border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
-            />
-            <span className="text-gray-400 font-medium">@</span>
-            <input
-              name="emailDomain"
-              type="text"
-              defaultValue={initialDomain}
-              className="flex-1 min-w-0 border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
-            />
-          </div>
+        <div className="flex flex-col gap-[8px]">
+          <label className="text-[14px] font-medium text-[#1E293B]">이메일</label>
+          <input
+            value={initialData?.email || ''}
+            disabled
+            className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none opacity-60 cursor-not-allowed"
+          />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            현재 비밀번호
-          </label>
+        <div className="flex flex-col gap-[8px]">
+          <label className="text-[14px] font-medium text-[#1E293B]">현재 비밀번호</label>
           <input
             type="password"
-            placeholder="********"
-            className="w-full border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
+            placeholder="현재 비밀번호 입력"
+            className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            새 비밀번호
-          </label>
+        <div className="flex flex-col gap-[8px]">
+          <label className="text-[14px] font-medium text-[#1E293B]">새 비밀번호</label>
           <input
             type="password"
-            placeholder="비밀번호 입력"
-            className="w-full border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:border-[#5A66EB] focus:ring-1 focus:ring-[#5A66EB] transition-all"
-            onChange={(e) => setHasPasswordChanged(e.target.value.length > 0)}
+            placeholder="새 비밀번호 입력 (변경 시에만)"
+            className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
           />
         </div>
 
-        <div className="flex gap-3 mt-8">
+        <div className="flex gap-2 mt-2">
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 bg-[#F8F9FA] text-gray-600 border border-gray-200 py-3.5 rounded-xl font-medium hover:bg-gray-100 transition-colors"
+            className="flex-1 h-[48px] rounded-[12px] border-[0.5px] border-gray-200 dark:border-gray-600 text-[14px] font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
           >
             취소
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 bg-[#5A66EB] text-white py-3.5 rounded-xl font-medium hover:bg-[#4853cc] transition-colors disabled:bg-gray-300"
+            className="flex-1 h-[48px] rounded-[12px] bg-[#5A66EB] text-[14px] font-medium text-white hover:bg-[#4A56DB] transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
             {isSubmitting ? '저장 중...' : '저장하기'}
           </button>

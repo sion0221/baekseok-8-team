@@ -8,7 +8,7 @@ export default function Footer() {
   const pathname = usePathname();
 
   return (
-    <footer className="fixed bottom-0 right-0 left-0 z-40 h-[60px] bg-white border-t border-gray-100">
+    <footer className="fixed bottom-0 right-0 left-0 z-40 h-[60px] bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
       <nav className="flex items-center justify-around w-full max-w-[768px] h-full mx-auto px-2">
         {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
           const isActive = pathname === href;

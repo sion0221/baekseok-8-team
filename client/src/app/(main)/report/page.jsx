@@ -196,26 +196,35 @@ export default function ReportPage() {
 
   return (
     <div className="py-4">
-      <div className="flex items-center gap-2 px-4 mb-6">
-        {[1, 2, 3].map((s, index) => (
-          <div key={s} className="flex flex-1 items-center gap-2">
-            <div
-              className={`flex flex-shrink-0 items-center justify-center w-6 h-6 rounded-full text-[12px] font-medium ${
-                s < step
-                  ? 'bg-green-500 text-white'
-                  : s === step
-                    ? 'bg-[#5A66EB] text-white'
-                    : 'bg-gray-100 text-gray-400'
-              }`}
-            >
-              {s < step ? <Check size={14} /> : s}
+      <div className="flex items-center justify-center mb-6">
+        {[
+          { num: 1, label: '위치' },
+          { num: 2, label: '정보' },
+          { num: 3, label: '완료' },
+        ].map(({ num, label }, index) => (
+          <div key={num} className="flex items-center">
+            <div className="flex flex-col items-center gap-1.5">
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full text-[13px] font-semibold transition-colors ${
+                  num < step
+                    ? 'bg-green-500 text-white'
+                    : num === step
+                      ? 'bg-[#5A66EB] text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
+                }`}
+              >
+                {num < step ? <Check size={15} /> : num}
+              </div>
+              <span className={`text-[11px] font-medium ${
+                num < step ? 'text-green-500' : num === step ? 'text-[#5A66EB]' : 'text-gray-300'
+              }`}>
+                {label}
+              </span>
             </div>
             {index < 2 && (
-              <div
-                className={`flex-1 h-[1px] ${
-                  s < step ? 'bg-green-500' : 'bg-gray-200'
-                }`}
-              />
+              <div className={`w-20 h-[1.5px] mb-5 mx-3 rounded-full ${
+                num < step ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-600'
+              }`} />
             )}
           </div>
         ))}
@@ -223,19 +232,19 @@ export default function ReportPage() {
 
       {step === 1 && (
         <div className="flex flex-col gap-4">
-          <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] overflow-hidden">
             <p className="text-[12px] text-gray-400 px-4 pt-4 mb-2">
               GPS 자동 감지
             </p>
             {locationError ? (
               <div className="flex items-center justify-center w-full h-[350px] bg-gray-50">
-                <p className="text-[13px] text-gray-400">{locationError}</p>
+                <p className="text-[13px] text-gray-400 dark:text-gray-500">{locationError}</p>
               </div>
             ) : location ? (
               <div ref={mapRef} className="w-full h-[350px] bg-gray-50" />
             ) : (
               <div className="flex items-center justify-center w-full h-[350px] bg-gray-50">
-                <p className="text-[13px] text-gray-400">위치 불러오는 중...</p>
+                <p className="text-[13px] text-gray-400 dark:text-gray-500">위치 불러오는 중...</p>
               </div>
             )}
             {location && (
@@ -254,7 +263,7 @@ export default function ReportPage() {
           <button
             onClick={handleNextStep}
             disabled={!location}
-            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity"
+            className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white disabled:opacity-50 transition-opacity cursor-pointer disabled:cursor-not-allowed"
           >
             다음
           </button>
@@ -263,13 +272,13 @@ export default function ReportPage() {
 
       {step === 2 && (
         <div className="flex flex-col gap-4">
-          <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-            <p className="text-[12px] text-gray-400 mb-3">사진 첨부</p>
+          <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] p-4">
+            <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-3">사진 첨부</p>
 
             <div className="flex gap-2 mb-3">
               <button
                 onClick={() => cameraInputRef.current?.click()}
-                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-[#5A66EB] bg-[#5A66EB]/10 gap-1"
+                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-[#5A66EB] bg-[#5A66EB]/10 gap-1 cursor-pointer hover:bg-[#5A66EB]/20 transition-colors"
               >
                 <span className="text-[20px]">📷</span>
                 <span className="text-[10px] text-[#5A66EB]">촬영</span>
@@ -285,7 +294,7 @@ export default function ReportPage() {
 
               <button
                 onClick={() => galleryInputRef.current?.click()}
-                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-gray-200 gap-1"
+                className="flex flex-col items-center justify-center w-[72px] h-[72px] rounded-[8px] border-[0.5px] border-gray-200 gap-1 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors"
               >
                 <span className="text-[20px]">🖼️</span>
                 <span className="text-[10px] text-gray-400">업로드</span>
@@ -309,7 +318,7 @@ export default function ReportPage() {
                 />
                 <button
                   onClick={handleRemovePhoto}
-                  className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 rounded-bl-[6px] bg-black/50 text-white"
+                  className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 rounded-bl-[6px] bg-black/50 hover:bg-black/70 text-white cursor-pointer transition-colors"
                   aria-label="사진 삭제"
                 >
                   <X size={12} />
@@ -320,7 +329,7 @@ export default function ReportPage() {
             {/* AI 판별 결과 */}
             {photo && (
               <div className="mt-3 rounded-[8px] border-[0.5px] border-gray-100 p-3">
-                <p className="text-[12px] text-gray-400 mb-2">AI 판별 결과</p>
+                <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-2">AI 판별 결과</p>
 
                 {aiChecking && (
                   <p className="text-[13px] text-[#5A66EB]">
@@ -362,17 +371,17 @@ export default function ReportPage() {
             )}
           </div>
 
-          <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-            <p className="text-[12px] text-gray-400 mb-3">위반 유형</p>
+          <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] p-4">
+            <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-3">위반 유형</p>
             <ul className="grid grid-cols-2 gap-2 list-none p-0 m-0">
               {VIOLATION_TYPES.map((type) => (
                 <li key={type}>
                   <button
                     onClick={() => handleViolationSelect(type)}
-                    className={`w-full rounded-[8px] border-[0.5px] py-3 px-3 text-[13px] text-left transition-colors ${
+                    className={`w-full rounded-[8px] border-[0.5px] py-3 px-3 text-[13px] text-left transition-colors cursor-pointer ${
                       violationType === type
                         ? 'border-[#5A66EB] bg-[#5A66EB]/10 text-[#5A66EB] font-medium'
-                        : 'border-gray-200 text-gray-600'
+                        : 'border-gray-200 text-gray-600 hover:border-[#5A66EB]/50 hover:bg-[#5A66EB]/5'
                     }`}
                   >
                     {type}
@@ -382,12 +391,12 @@ export default function ReportPage() {
             </ul>
           </div>
 
-          <div className="bg-white border-[0.5px] border-gray-100 rounded-[12px] p-4">
-            <p className="text-[12px] text-gray-400 mb-2">자동 수집 정보</p>
-            <dl className="flex flex-col divide-y divide-gray-100">
+          <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] p-4">
+            <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-2">자동 수집 정보</p>
+            <dl className="flex flex-col divide-y divide-gray-100 dark:divide-gray-700">
               <div className="flex items-center justify-between py-2">
-                <dt className="text-[13px] text-gray-400">신고 위치</dt>
-                <dd className="flex items-center gap-1 text-[13px] font-medium text-gray-900">
+                <dt className="text-[13px] text-gray-400 dark:text-gray-500">신고 위치</dt>
+                <dd className="flex items-center gap-1 text-[13px] font-medium text-gray-900 dark:text-gray-100">
                   {nearbyPlace || 'GPS 자동 감지'}
                   <span className="rounded-full px-1.5 py-0.5 bg-[#5A66EB]/10 text-[10px] text-[#5A66EB]">
                     GPS
@@ -395,8 +404,8 @@ export default function ReportPage() {
                 </dd>
               </div>
               <div className="flex items-center justify-between py-2">
-                <dt className="text-[13px] text-gray-400">신고 시각</dt>
-                <dd className="flex items-center gap-1 text-[13px] font-medium text-gray-900">
+                <dt className="text-[13px] text-gray-400 dark:text-gray-500">신고 시각</dt>
+                <dd className="flex items-center gap-1 text-[13px] font-medium text-gray-900 dark:text-gray-100">
                   {new Date().toLocaleString('ko-KR')}
                   <span className="rounded-full px-1.5 py-0.5 bg-[#5A66EB]/10 text-[10px] text-[#5A66EB]">
                     자동
@@ -404,12 +413,12 @@ export default function ReportPage() {
                 </dd>
               </div>
               <div className="flex items-center justify-between py-2">
-                <dt className="text-[13px] text-gray-400">킥보드 브랜드</dt>
+                <dt className="text-[13px] text-gray-400 dark:text-gray-500">킥보드 브랜드</dt>
                 <dd className="flex items-center gap-1">
                   <select
                     value={company}
                     onChange={handleCompanySelect}
-                    className="bg-transparent text-[13px] font-medium text-gray-900 border-none outline-none"
+                    className="bg-transparent text-[13px] font-medium text-gray-900 border-none outline-none cursor-pointer"
                   >
                     <option value="">브랜드 선택</option>
                     {KICKBOARD_COMPANIES.map((c) => (
@@ -482,7 +491,7 @@ export default function ReportPage() {
               <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-50">
                 <X size={40} className="text-red-500" strokeWidth={1.5} />
               </div>
-              <h2 className="text-[20px] font-medium text-gray-900">
+              <h2 className="text-[20px] font-medium text-gray-900 dark:text-gray-100">
                 신고가 반려되었습니다
               </h2>
               <p className="text-[14px] text-center text-gray-400">
@@ -506,18 +515,14 @@ export default function ReportPage() {
                   strokeWidth={1.5}
                 />
               </div>
-              <h2 className="text-[20px] font-medium text-gray-900">
+              <h2 className="text-[20px] font-medium text-gray-900 dark:text-gray-100">
                 신고가 접수되었습니다!
               </h2>
               <p className="text-[14px] text-center text-gray-400">
-                신고가 처리되면 알려드릴게요.
+                신고가 정상적으로 접수되었습니다.
+                <br />
+                처리 결과는 마이페이지에서 확인할 수 있어요.
               </p>
-              <div className="w-full rounded-[12px] border-[0.5px] border-gray-100 bg-white p-4">
-                <p className="text-[13px] text-gray-400 mb-1">예상 처리 시간</p>
-                <p className="text-[20px] font-medium text-[#5A66EB]">
-                  약 15~20분
-                </p>
-              </div>
               <Link
                 href="/"
                 className="w-full rounded-[12px] py-3 bg-[#5A66EB] text-[15px] font-medium text-white text-center"

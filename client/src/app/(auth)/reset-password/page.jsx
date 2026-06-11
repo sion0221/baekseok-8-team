@@ -55,7 +55,7 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC]">
+    <div className="flex justify-center items-center min-h-screen bg-[#F8FAFC] dark:bg-gray-900">
       <Card className="w-full max-w-[390px] border-none shadow-none">
         <CardHeader className="flex flex-row items-center gap-[12px] pt-[0px] pb-[32px] px-[24px]">
           <Link
@@ -116,7 +116,7 @@ export default function ResetPasswordPage() {
                   required
                   value={email}
                   onChange={handleEmailChange}
-                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                 />
                 {email && !isEmailValid && (
                   <p className="text-[12px] text-[#EF4444]">

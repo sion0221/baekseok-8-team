@@ -70,7 +70,7 @@ export default function ReportMap() {
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-[15px] font-medium text-gray-900">
+        <h2 className="text-[15px] font-medium text-gray-900 dark:text-gray-100">
           내 주변 신고 현황
         </h2>
         <Link href="/map" className="text-[12px] text-[#5A66EB]">
@@ -80,7 +80,7 @@ export default function ReportMap() {
 
       <div
         ref={mapRef}
-        className="w-full h-[200px] rounded-[12px] border-[0.5px] border-gray-100 bg-gray-50"
+        className="w-full h-[200px] rounded-[12px] border-[0.5px] border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"
       />
       {reports.length === 0 && (
         <p className="text-[12px] text-gray-400 text-center mt-2">
@@ -92,7 +92,7 @@ export default function ReportMap() {
         {Object.entries(REPORT_STATUS).map(([status, { color }]) => (
           <span
             key={status}
-            className="flex items-center gap-1 text-[12px] text-gray-500"
+            className="flex items-center gap-1 text-[12px] text-gray-500 dark:text-gray-400"
           >
             <span
               style={{

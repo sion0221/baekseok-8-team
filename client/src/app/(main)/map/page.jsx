@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { REPORT_STATUS, FILTERS } from '@/constants';
 
@@ -82,20 +81,15 @@ export default function MapPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex items-center gap-3 px-4 h-[52px] bg-white border-b border-gray-100">
-        <Link href="/" className="text-[20px] text-gray-500" aria-label="뒤로가기">←</Link>
-        <span className="text-[16px] font-medium text-gray-900">전체 신고 지도</span>
-      </div>
-
-      <div className="flex gap-2 px-4 py-2 bg-white border-b border-gray-100 overflow-x-auto">
+      <div className="flex gap-2 px-4 py-2 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 overflow-x-auto">
         {FILTERS.map((filter) => (
           <button
             key={filter}
             onClick={() => handleFilterClick(filter)}
-            className={`text-[12px] px-3 py-1 rounded-full border whitespace-nowrap transition-colors ${
+            className={`text-[12px] px-3 py-1 rounded-full border whitespace-nowrap transition-colors cursor-pointer ${
               activeFilter === filter
                 ? 'bg-[#5A66EB] text-white border-[#5A66EB]'
-                : 'bg-white text-gray-500 border-gray-200'
+                : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-600 hover:border-[#5A66EB] hover:text-[#5A66EB]'
             }`}
           >
             {filter}
@@ -105,16 +99,16 @@ export default function MapPage() {
 
       <div ref={mapRef} className="w-full h-[400px]" />
 
-      <div className="flex items-center gap-4 px-4 py-2 bg-white border-t border-gray-100">
+      <div className="flex items-center gap-4 px-4 py-2 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
         {Object.entries(REPORT_STATUS).map(([status, { color }]) => (
-          <span key={status} className="flex items-center gap-1 text-[12px] text-gray-500">
+          <span key={status} className="flex items-center gap-1 text-[12px] text-gray-500 dark:text-gray-400">
             <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: color }} />
             {status}
           </span>
         ))}
       </div>
 
-      <ul className="flex flex-col gap-2 px-4 py-3 bg-gray-50 list-none p-0 m-0">
+      <ul className="flex flex-col gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-900 list-none p-0 m-0">
         {reports
           .filter((r) => activeFilter === '전체' || r.status === activeFilter)
           .map((report) => {
@@ -122,11 +116,11 @@ export default function MapPage() {
             return (
               <li
                 key={report.id}
-                className="flex items-center gap-3 bg-white border-[0.5px] border-gray-100 rounded-[12px] px-4 py-3"
+                className="flex items-center gap-3 bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] px-4 py-3"
               >
                 <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: status?.color, flexShrink: 0 }} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[12px] text-gray-800">
+                  <p className="text-[12px] text-gray-800 dark:text-gray-200">
                     {report.kickboard_company || report.ai_company || '미확인'} · {new Date(report.created_at).toLocaleString('ko-KR')}
                   </p>
                 </div>
