@@ -20,6 +20,7 @@ node_modules/
 # supabase
 /supabase/
 
+.env.local
 
 # production
 /build
