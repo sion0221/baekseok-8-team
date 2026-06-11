@@ -43,7 +43,7 @@ export default function MyPage() {
         const { data: userData, error: userError } = await supabase
           .from('users')
           .select('*')
-          .limit(1)
+          .eq('id', session.user.id)
           .single();
 
         if (userError) throw userError;
@@ -51,7 +51,7 @@ export default function MyPage() {
         const { count, error: countError } = await supabase
           .from('reports')
           .select('*', { count: 'exact', head: true })
-          .eq('user_id', userData.id);
+          .eq('user_id', session.user.id);
 
         if (countError) throw countError;
 
@@ -60,6 +60,7 @@ export default function MyPage() {
           email: userData.email || '',
           grade: userData.grade || '브론즈',
           reportCount: count || 0,
+          profileUrl: userData.profile_url || null,
         });
       } catch (error) {
         console.error('내 정보를 불러오는데 실패했습니다:', error.message);
@@ -76,6 +77,7 @@ export default function MyPage() {
   };
 
   const handleSaveProfile = (newData) => {
+    setUserInfo((prev) => ({ ...prev, ...newData }));
     setIsEditMode(false);
   };
 
@@ -102,7 +104,7 @@ export default function MyPage() {
 
           {/* 테마 설정 */}
           <div className="bg-white dark:bg-gray-800 border-[0.5px] border-gray-100 dark:border-gray-700 rounded-[12px] p-4">
-            <p className="text-[12px] text-gray-400 dark:text-gray-500 mb-3">
+            <p className="text-[15px] font-semibold text-gray-900 dark:text-white mb-3">
               테마
             </p>
             <div className="flex gap-2">

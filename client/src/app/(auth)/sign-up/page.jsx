@@ -141,12 +141,19 @@ export default function SignUpPage() {
     return () => clearTimeout(delayDebounceTimer);
   }, [formData.email]);
 
+  const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
+
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+    if (!file) return;
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setServerError('PNG 또는 JPG, JPEG 이미지만 가능합니다.');
+      e.target.value = '';
+      return;
     }
+    setServerError('');
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const handleProfileClick = () => {
@@ -355,7 +362,7 @@ export default function SignUpPage() {
               <input
                 type="file"
                 ref={fileInputRef}
-                accept="image/*"
+                accept="image/png, image/jpeg, image/jpg"
                 onChange={handleImageChange}
                 className="hidden"
               />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { LogOut } from 'lucide-react';
@@ -12,10 +12,36 @@ import { NAV_ITEMS, BACK_BUTTON_PATHS } from '@/constants';
 
 export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [profileUrl, setProfileUrl] = useState(() =>
+    typeof window !== 'undefined' ? localStorage.getItem('profile_url_cache') || null : null
+  );
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data } = await supabase
+        .from('users')
+        .select('profile_url')
+        .eq('id', session.user.id)
+        .single();
+      if (data?.profile_url) {
+        setProfileUrl(data.profile_url);
+        localStorage.setItem('profile_url_cache', data.profile_url);
+      }
+    };
+    fetchProfile();
+
+    const handleProfileUpdated = (e) => setProfileUrl(e.detail.profileUrl);
+    window.addEventListener('profileUpdated', handleProfileUpdated);
+    return () => window.removeEventListener('profileUpdated', handleProfileUpdated);
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.removeItem('username_cache');
+    localStorage.removeItem('profile_url_cache');
     handleSidebarClose();
     router.replace('/sign-in');
   };
@@ -66,7 +92,11 @@ export default function Header() {
             className="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
             aria-label="프로필"
           >
-            <span className="text-[13px] text-gray-400">👤</span>
+            {profileUrl ? (
+              <img src={profileUrl} alt="프로필" className="w-full h-full object-cover rounded-full" />
+            ) : (
+              <span className="text-[13px] text-gray-400">👤</span>
+            )}
           </Link>
         </div>
       </header>
@@ -84,10 +114,10 @@ export default function Header() {
         }`}
       >
         <div className="flex items-center justify-between h-[56px] px-5 border-b border-gray-100 dark:border-gray-700">
-          <span className="text-[15px] font-semibold text-gray-900 dark:text-gray-100">메뉴</span>
+          <span className="text-[15px] font-semibold text-gray-900 dark:text-white">메뉴</span>
           <button
             onClick={handleSidebarClose}
-            className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-[8px] transition-colors cursor-pointer"
+            className="text-gray-400 dark:text-gray-300 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-[8px] transition-colors cursor-pointer"
             aria-label="메뉴 닫기"
           >
             <X size={20} />
@@ -102,7 +132,7 @@ export default function Header() {
               className={`px-4 py-3 rounded-[8px] text-[14px] transition-colors ${
                 pathname === item.href
                   ? 'bg-[#5A66EB]/10 text-[#5A66EB] font-medium'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  : 'text-gray-600 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               {item.label}

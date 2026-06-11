@@ -3,18 +3,41 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AlertCircle } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export default function WithdrawPage() {
   const router = useRouter();
   const [isChecked, setIsChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleWithdraw = () => {
+  const handleWithdraw = async () => {
     if (!isChecked) return;
-    if (
-      window.confirm('탈퇴 시 모든 데이터가 삭제됩니다. 정말 탈퇴하시겠습니까?')
-    ) {
+    if (!window.confirm('탈퇴 시 모든 데이터가 삭제됩니다. 정말 탈퇴하시겠습니까?')) return;
+
+    setIsLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('로그인이 필요합니다.');
+
+      const res = await fetch('/api/withdraw', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: session.user.id }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || '탈퇴 처리에 실패했습니다.');
+
+      await supabase.auth.signOut();
+      localStorage.removeItem('username_cache');
+      localStorage.removeItem('profile_url_cache');
+
       alert('탈퇴 처리가 완료되었습니다.');
-      router.push('/sign-in');
+      router.replace('/sign-in');
+    } catch (err) {
+      alert('탈퇴 처리 중 오류가 발생했습니다: ' + err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -26,7 +49,7 @@ export default function WithdrawPage() {
           정말 탈퇴하시겠습니까?
         </p>
         <p className="text-[13px] text-gray-500 leading-relaxed">
-          탈퇴하시면 모든 신고 내역과 활동 포인트가{' '}
+          탈퇴하시면 모든 신고 내역과 등급이{' '}
           <span className="font-semibold text-red-500">영구적으로 삭제</span>
           되며, 다시 복구할 수 없습니다.
         </p>
@@ -78,14 +101,14 @@ export default function WithdrawPage() {
 
       <button
         onClick={handleWithdraw}
-        disabled={!isChecked}
+        disabled={!isChecked || isLoading}
         className={`w-full h-[48px] rounded-[12px] text-[15px] font-medium transition-colors ${
-          isChecked
+          isChecked && !isLoading
             ? 'bg-red-500 text-white hover:bg-red-600 cursor-pointer'
             : 'bg-gray-100 text-gray-400 cursor-not-allowed'
         }`}
       >
-        회원 탈퇴하기
+        {isLoading ? '처리 중...' : '회원 탈퇴하기'}
       </button>
     </div>
   );

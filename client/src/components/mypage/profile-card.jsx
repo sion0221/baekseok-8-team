@@ -8,7 +8,11 @@ const ProfileCard = ({ userInfo, onToggleEdit }) => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-[52px] h-[52px] bg-gray-100 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
-            <span className="text-[26px] text-gray-400">👤</span>
+            {userInfo?.profileUrl ? (
+              <img src={userInfo.profileUrl} alt="프로필" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-[26px] text-gray-400">👤</span>
+            )}
           </div>
           <div>
             <p className="text-[15px] font-semibold text-gray-900 dark:text-gray-100">{userInfo?.name}</p>
