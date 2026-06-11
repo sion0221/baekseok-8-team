@@ -82,7 +82,6 @@ export default function SignInPage() {
             height={100}
             priority
             className="rounded-full"
-            style={{ width: 100, height: 100, objectFit: 'cover' }}
           />
           <CardTitle className="text-[24px] font-bold text-[#073462]">
             로그인
@@ -106,6 +105,7 @@ export default function SignInPage() {
                   required
                   value={formData.email}
                   onChange={handleInputChange}
+                  placeholder="이메일을 입력해주세요"
                   className="w-full h-[48px] pl-[44px] pr-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                 />
               </div>
@@ -123,6 +123,7 @@ export default function SignInPage() {
                   required
                   value={formData.password}
                   onChange={handleInputChange}
+                  placeholder="비밀번호를 입력해주세요"
                   className="w-full h-[48px] pl-[44px] pr-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                 />
               </div>

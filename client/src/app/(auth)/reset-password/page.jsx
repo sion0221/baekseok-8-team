@@ -116,7 +116,8 @@ export default function ResetPasswordPage() {
                   required
                   value={email}
                   onChange={handleEmailChange}
-                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  placeholder="가입한 이메일을 입력해주세요"
+                  className="w-full h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                 />
                 {email && !isEmailValid && (
                   <p className="text-[12px] text-[#EF4444]">
@@ -138,16 +139,16 @@ export default function ResetPasswordPage() {
                 className={`flex justify-center items-center gap-[8px] w-full h-[52px] mt-[160px] rounded-[12px] text-[16px] font-bold text-[#FFFFFF] transition-colors ${
                   isEmailValid && !isLoading
                     ? 'bg-[#5A66EB] hover:bg-[#4852D4] cursor-pointer'
-                    : 'bg-[#D1D5DB] text-[#4B5563] cursor-not-allowed'
+                    : 'bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed'
                 }`}
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="w-[20px] h-[20px] animate-spin" />
                     <span>전송 중...</span>
-                  </>
+                               </>
                 ) : (
-                  '비밀번호 재설정 메일 보내기'
+                  '링크 전송'
                 )}
               </button>
             </form>

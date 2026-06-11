@@ -172,7 +172,8 @@ export default function FindIdPage() {
                       disabled={isLoading || isCodeSending}
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="flex-1 h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB] disabled:opacity-60"
+                      placeholder="이메일을 입력해주세요"
+                      className="flex-1 h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB] disabled:opacity-60"
                     />
                     <button
                       type="button"
@@ -181,7 +182,7 @@ export default function FindIdPage() {
                       className={`flex justify-center items-center w-[90px] h-[48px] rounded-[12px] text-[14px] font-medium transition-colors ${
                         isEmailValid && !isCodeSending && !isLoading
                           ? 'bg-[#5A66EB] text-white hover:bg-[#4852D4] cursor-pointer'
-                          : 'bg-[#D1D5DB] text-[#4B5563] cursor-not-allowed'
+                          : 'bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed'
                       }`}
                     >
                       {isCodeSending ? (
@@ -221,7 +222,7 @@ export default function FindIdPage() {
                     value={formData.authCode}
                     onChange={handleInputChange}
                     placeholder="8자리 인증코드 입력"
-                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB] disabled:opacity-60"
+                    className="w-full h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB] disabled:opacity-60"
                   />
 
                   {errorMessage && (
@@ -251,15 +252,16 @@ export default function FindIdPage() {
                 className={`flex justify-center items-center gap-[8px] w-full h-[52px] mt-[100px] rounded-[12px] text-[16px] font-bold text-[#FFFFFF] transition-colors ${
                   isCodeValid && !isLoading && !isCodeSending
                     ? 'bg-[#5A66EB] hover:bg-[#4852D4] cursor-pointer'
-                    : 'bg-[#D1D5DB] text-[#4B5563] cursor-not-allowed'
+                    : 'bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed'
                 }`}
               >
-                {isLoading ? (
+                    {isLoading ? (
                   <>
                     <Loader2 className="w-[20px] h-[20px] animate-spin" />
+                    <span>확인 중...</span>
                   </>
                 ) : (
-                  '확인'
+                  '아이디 찾기'
                 )}
               </button>
             </form>

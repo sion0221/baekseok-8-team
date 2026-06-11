@@ -84,7 +84,7 @@ export default function Header() {
           </button>
 
           <Link href="/main" className="absolute left-1/2 -translate-x-1/2">
-            <Image src="/logo.svg" alt="로고" width={40} height={40} loading="eager" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
+            <Image src="/logo.svg" alt="로고" width={40} height={40} loading="eager" />
           </Link>
 
           <Link

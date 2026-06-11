@@ -313,7 +313,7 @@ export default function SignUpPage() {
                     if (authCodeError) setAuthCodeError('');
                   }}
                   placeholder="8자리 인증코드 입력"
-                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  className="w-full h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                 />
                 {authCodeError && (
                   <div className="flex items-center gap-[6px] text-[12px] text-[#EF4444] font-medium">
@@ -341,7 +341,7 @@ export default function SignUpPage() {
                 className={`flex justify-center items-center gap-[8px] w-full h-[52px] mt-[120px] rounded-[12px] text-[16px] font-bold text-[#FFFFFF] transition-colors ${
                   authCode.trim().length >= 8 && !isLoading
                     ? 'bg-[#5A66EB] hover:bg-[#4852D4] cursor-pointer'
-                    : 'bg-[#D1D5DB] text-[#4B5563] cursor-not-allowed'
+                    : 'bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed'
                 }`}
               >
                 {isLoading ? (
@@ -371,7 +371,7 @@ export default function SignUpPage() {
                 onClick={handleProfileClick}
                 className="relative w-[100px] h-[100px] cursor-pointer group"
               >
-                <div className="flex items-center justify-center w-full h-full bg-[#D1D5DB] rounded-full overflow-hidden">
+                <div className="flex items-center justify-center w-full h-full bg-[#F1F5F9] rounded-full overflow-hidden">
                   {imagePreview ? (
                     <Image
                       src={imagePreview}
@@ -403,7 +403,8 @@ export default function SignUpPage() {
                     required
                     value={formData.nickname}
                     onChange={handleInputChange}
-                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                    placeholder="닉네임을 입력해주세요 (2자 이상)"
+                    className="w-full h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
                   {isNicknameChecking ? (
                     <div className="flex items-center gap-[6px] text-[12px] text-[#64748B] font-medium">
@@ -440,7 +441,8 @@ export default function SignUpPage() {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                    placeholder="이메일을 입력해주세요"
+                    className="w-full h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
                   {isEmailChecking ? (
                     <div className="flex items-center gap-[6px] text-[12px] text-[#64748B] font-medium">
@@ -472,7 +474,8 @@ export default function SignUpPage() {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                    placeholder="비밀번호를 입력해주세요 (8자 이상)"
+                    className="w-full h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
                   {formData.password && !isPasswordValid && (
                     <p className="text-[12px] text-[#EF4444]">
@@ -491,7 +494,8 @@ export default function SignUpPage() {
                     required
                     value={formData.passwordConfirm}
                     onChange={handleInputChange}
-                    className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                    placeholder="비밀번호를 다시 입력해주세요"
+                    className="w-full h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   />
                   {formData.passwordConfirm && !isConfirmValid && (
                     <p className="text-[12px] text-[#EF4444]">
@@ -510,20 +514,20 @@ export default function SignUpPage() {
 
               <button
                 type="submit"
-                disabled={!isFormValid || isLoading || isNicknameChecking || isEmailChecking}
-                className={`flex justify-center items-center gap-[8px] w-full h-[52px] mt-[12px] rounded-[12px] text-[16px] font-bold text-[#FFFFFF] transition-colors ${
-                  isFormValid && !isLoading && !isNicknameChecking && !isEmailChecking
+                disabled={!isFormValid || isLoading}
+                className={`flex justify-center items-center gap-[8px] w-full h-[52px] mt-[32px] rounded-[12px] text-[16px] font-bold text-[#FFFFFF] transition-colors ${
+                  isFormValid && !isLoading
                     ? 'bg-[#5A66EB] hover:bg-[#4852D4] cursor-pointer'
-                    : 'bg-[#D1D5DB] text-[#4B5563] cursor-not-allowed'
+                    : 'bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed'
                 }`}
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="w-[20px] h-[20px] animate-spin" />
-                    <span>가입 진행 중...</span>
+                    <span>처리 중...</span>
                   </>
                 ) : (
-                  '가입하기'
+                  '다음'
                 )}
               </button>
             </form>

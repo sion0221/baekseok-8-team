@@ -108,7 +108,7 @@ export default function UpdatePasswordPage() {
                   required
                   value={password}
                   onChange={handlePasswordChange}
-                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  className="w-full h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   placeholder="새로운 비밀번호 입력"
                 />
 
@@ -142,7 +142,7 @@ export default function UpdatePasswordPage() {
                   required
                   value={passwordConfirm}
                   onChange={(e) => setPasswordConfirm(e.target.value)}
-                  className="w-full h-[48px] px-[16px] bg-[#D1D5DB] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
+                  className="w-full h-[48px] px-[16px] bg-[#F1F5F9] dark:bg-gray-700 dark:text-gray-100 border-none rounded-[12px] text-[15px] outline-none focus:ring-2 focus:ring-[#5A66EB]"
                   placeholder="비밀번호 다시 입력"
                 />
                 {passwordConfirm && !isConfirmValid && (
@@ -165,7 +165,7 @@ export default function UpdatePasswordPage() {
                 className={`flex justify-center items-center gap-[8px] w-full h-[52px] mt-[12px] rounded-[12px] text-[16px] font-bold text-[#FFFFFF] transition-colors ${
                   isFormValid && !isLoading
                     ? 'bg-[#5A66EB] hover:bg-[#4852D4] cursor-pointer'
-                    : 'bg-[#D1D5DB] text-[#4B5563] cursor-not-allowed'
+                    : 'bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed'
                 }`}
               >
                 {isLoading ? (
@@ -174,13 +174,4 @@ export default function UpdatePasswordPage() {
                     <span>변경 처리 중...</span>
                   </>
                 ) : (
-                  '비밀번호 변경하기'
-                )}
-              </button>
-            </form>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
+ 
