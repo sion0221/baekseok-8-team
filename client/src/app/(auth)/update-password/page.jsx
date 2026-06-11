@@ -174,4 +174,13 @@ export default function UpdatePasswordPage() {
                     <span>변경 처리 중...</span>
                   </>
                 ) : (
- 
+                  '비밀번호 변경'
+                )}
+              </button>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
