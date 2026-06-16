@@ -2,7 +2,7 @@
 
 ## 📌 프로젝트 소개
 
-<img width="942" height="902" alt="Image" src="https://github.com/user-attachments/assets/ac09fb00-b6c2-4392-b21b-c02781d6b766" />
+<img width="877" height="907" alt="신고홈페이지 사진" src="https://github.com/user-attachments/assets/e4178997-83de-4de1-b6eb-32a8c5f569ab" />  
 
 대학 캠퍼스 내 공유 킥보드 이용이 많아지면서, 무단 방치된 킥보드가 보행 안전을 위협하는 문제가 심화되고 있습니다.  
 특히 백석대학교는 넓은 부지와 경사로가 많아 킥보드 이용률이 높고, 주요 거점에 킥보드가 상습적으로 방치되어  
